@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Enruta2 Conductor",
+    "slug": "enruta2-driver",
+    "scheme": "enruta2-driver",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "co.enruta2.driver",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "co.enruta2.driver",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    }
+  }
+}
