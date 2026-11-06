@@ -1,0 +1,7 @@
+{
+  "extends": "@enruta2/config/tsconfig/base.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src", "vitest.config.ts"]
+}
