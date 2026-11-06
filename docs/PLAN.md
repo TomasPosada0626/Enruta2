@@ -24,15 +24,15 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 
 ## Etapas
 
-| Etapa                                          | Duración | Estado    |
-| ---------------------------------------------- | -------- | --------- |
-| 0. Fundaciones (Fase 0)                        | 1 sem    | En curso  |
-| 1. Pruebas de riesgo                           | 1 sem    | Pendiente |
-| 2. Datos, auth y permisos (Fase 1)             | 2–3 sem  | Pendiente |
-| 3. Paradas y optimización (Fase 2)             | 2–3 sem  | Pendiente |
-| 4. Recorrido en vivo (Fase 3)                  | 3 sem    | Pendiente |
-| 5. Eventos, notificaciones y "hoy no va" (4–5) | 3 sem    | Pendiente |
-| 6. Calidad, lanzamiento y piloto (Fase 6)      | ~4 sem   | Pendiente |
+| Etapa                                          | Duración | Estado     |
+| ---------------------------------------------- | -------- | ---------- |
+| 0. Fundaciones (Fase 0)                        | 1 sem    | Completada |
+| 1. Pruebas de riesgo                           | 1 sem    | Pendiente  |
+| 2. Datos, auth y permisos (Fase 1)             | 2–3 sem  | Pendiente  |
+| 3. Paradas y optimización (Fase 2)             | 2–3 sem  | Pendiente  |
+| 4. Recorrido en vivo (Fase 3)                  | 3 sem    | Pendiente  |
+| 5. Eventos, notificaciones y "hoy no va" (4–5) | 3 sem    | Pendiente  |
+| 6. Calidad, lanzamiento y piloto (Fase 6)      | ~4 sem   | Pendiente  |
 
 ### Etapa 0 — Fundaciones
 
@@ -43,7 +43,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 - [x] Apps Expo (SDK 58) del conductor y de acudientes, importando `@enruta2/domain`
 - [x] GitHub Actions: formato, lint, typecheck, tests y build
 - [x] ADRs 0001 a 0003 (y 0009 sobre versiones base)
-- [ ] Abrir ambas apps en un dispositivo o emulador Android (Expo Go)
+- [x] Abrir ambas apps en un dispositivo Android con Expo Go
 
 ### Etapa 1 — Pruebas de riesgo
 

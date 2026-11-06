@@ -135,15 +135,15 @@ pnpm guardian   # Enruta2 acudientes, puerto 8082
 
 ## Avance
 
-| Fase                               | Estado    |
-| ---------------------------------- | --------- |
-| 0. Fundaciones                     | En curso  |
-| 1. Datos, autenticación y permisos | Pendiente |
-| 2. Paradas y optimización          | Pendiente |
-| 3. Recorrido en vivo               | Pendiente |
-| 4. Eventos y notificaciones        | Pendiente |
-| 5. "Hoy no va" e historial         | Pendiente |
-| 6. Calidad y lanzamiento           | Pendiente |
+| Fase                               | Estado     |
+| ---------------------------------- | ---------- |
+| 0. Fundaciones                     | Completada |
+| 1. Datos, autenticación y permisos | Pendiente  |
+| 2. Paradas y optimización          | Pendiente  |
+| 3. Recorrido en vivo               | Pendiente  |
+| 4. Eventos y notificaciones        | Pendiente  |
+| 5. "Hoy no va" e historial         | Pendiente  |
+| 6. Calidad y lanzamiento           | Pendiente  |
 
 El detalle de cada fase está en el [plan de acción](docs/PLAN.md).
 
