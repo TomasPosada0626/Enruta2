@@ -1,0 +1,44 @@
+# Dependencias
+node_modules/
+
+# Builds y caché
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# Entorno: solo se versiona .env.example
+.env
+.env.*
+!.env.example
+
+# Expo / React Native (los proyectos nativos se generan con prebuild)
+.expo/
+web-build/
+android/
+ios/
+expo-env.d.ts
+
+# Credenciales de firma y de servicios: nunca al repo
+*.jks
+*.keystore
+*.p8
+*.p12
+*.pem
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

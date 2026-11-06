@@ -1,0 +1,7 @@
+{
+  // Usa el TypeScript del repo (el mismo de la CLI y el CI), no el que trae VS Code o una extensión.
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

@@ -1,0 +1,14 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Versiones compartidas por todo el monorepo (se usan con "catalog:" en cada package.json).
+catalog:
+  # TypeScript se queda en 6.0: typescript-eslint y @nestjs/swagger aún no aceptan 7.x (ver ADR 0009).
+  typescript: ~6.0.3
+  '@types/node': ^26.6.6
+  # ESLint se queda en 9: los plugins de eslint-config-expo aún no aceptan 10.x (ver ADR 0009).
+  eslint: ^9.39.5
+  vitest: ^5.1.0
+  '@vitest/coverage-v8': ^5.1.0
+  vite: ^8.3.6
