@@ -7,7 +7,7 @@ Cada decisión que cambia la forma del sistema queda escrita aquí, con su conte
 | [0001](0001-expo-android-mvp.md)        | Expo y Android como única plataforma del MVP                    | Aceptada  |
 | [0002](0002-dos-apps-separadas.md)      | Dos apps separadas en vez de una con roles                      | Aceptada  |
 | [0003](0003-ubicacion-segundo-plano.md) | Ubicación en segundo plano e ingesta por lotes HTTP             | Aceptada  |
-| 0004                                    | Motor de optimización: OSRM + VROOM                             | Pendiente |
+| [0004](0004-osrm-vroom.md)              | Motor de optimización: OSRM + VROOM                             | Aceptada  |
 | 0005                                    | Tiempo real con Socket.IO y Redis                               | Pendiente |
 | 0006                                    | Permisos con CASL compartidos en `packages/domain`              | Pendiente |
 | 0007                                    | PostGIS con Prisma usando `Unsupported` + SQL crudo encapsulado | Pendiente |

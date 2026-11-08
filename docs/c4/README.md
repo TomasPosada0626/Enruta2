@@ -62,4 +62,4 @@ flowchart LR
   PUSH --> G
 ```
 
-**Estado actual (Fase 0):** existen las dos apps, la API con health checks, PostgreSQL/PostGIS y Redis. OSRM y VROOM llegan en la Fase 2; WebSockets y Expo Push, en las fases 3 y 4.
+**Estado actual (Etapa 1):** existen las dos apps, la API con health checks, PostgreSQL/PostGIS y Redis. OSRM y VROOM ya corren en Docker con el Valle de Aburrá ([`infra/routing`](../../infra/routing/README.md)), pero la API los empieza a usar en la Fase 2; WebSockets y Expo Push llegan en las fases 3 y 4.

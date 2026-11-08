@@ -355,9 +355,9 @@ Al conductor y al admin se les emite la vista completa (todas las paradas) en un
 ### 12.1 Optimización del orden
 
 - **Problema:** viajante con ventanas de tiempo para **un vehículo** (TSP-TW), resuelto con VROOM sobre la matriz de tiempos de OSRM.
-- **Ida:** inicio en `Route.startLocation` (o la primera parada), una tarea por parada con tiempo de servicio, **fin en el colegio**, y ventana del vehículo que termina en la hora de entrada menos un margen.
+- **Ida:** inicio en `Route.startLocation` (o la primera parada), una tarea por parada con tiempo de servicio y **fin en el colegio**, sin ventana de tiempo en el vehículo.
 - **Vuelta:** inicio en el colegio, una tarea por parada, **ruta abierta** (sin punto final).
-- Si VROOM informa que no es posible llegar a tiempo → `feasible = false` y aviso: _"Con estas paradas la ruta no alcanza a llegar a tiempo"_.
+- **Viabilidad:** VROOM no avisa cuando la hora de entrada es imposible; deja paradas sin asignar ([ADR 0004](adr/0004-osrm-vroom.md)). Por eso se calcula el orden de menor duración con todas las paradas y, si la llegada al colegio supera la hora de entrada menos un margen → `feasible = false` y aviso: _"Con estas paradas la ruta no alcanza a llegar a tiempo"_.
 - **Respaldo:** heurística en `packages/domain` (vecino más cercano + 2-opt) para cuando VROOM no esté disponible. Sus tests comparan la calidad contra VROOM en casos de prueba.
 - **Recálculo:** al cambiar estudiantes de la ruta o con un "hoy no va" durante un recorrido (solo sobre las paradas pendientes, desde la posición actual).
 
@@ -463,7 +463,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 ### Fase 2 — Paradas y optimización
 
 - Geocodificación detrás de una interfaz y confirmación del pin en el mapa (app del conductor).
-- OSRM con el extracto de Colombia de OpenStreetMap y VROOM en Docker.
+- OSRM con el Valle de Aburrá (recorte del extracto de Colombia de OpenStreetMap) y VROOM en Docker. Ya montados en la Etapa 1 del plan (`infra/routing`); en esta fase la API los empieza a usar.
 - Endpoint de optimización para ida y vuelta, con aviso de inviabilidad.
 - Heurística de respaldo en `packages/domain` con tests.
 - Lista y mapa del orden óptimo en la app del conductor.
