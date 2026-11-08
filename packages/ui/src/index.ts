@@ -16,3 +16,4 @@ export {
   type VarianteBoton,
 } from './componentes';
 export { ANCHO_DISENO, MapaIlustrado, type MapaIlustradoProps, type Punto } from './MapaIlustrado';
+export { BarraPestanas, Fila, type ItemPestana } from './Pestanas';

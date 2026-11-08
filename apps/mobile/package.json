@@ -1,0 +1,40 @@
+{
+  "name": "@enruta2/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Enruta2: una sola app para acudientes y para conductores, acompañantes y administradores de ruta.",
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "build": "expo export --platform android --output-dir dist",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "apk": "npx -y eas-cli@27.5.0 build --platform android --profile preview --non-interactive",
+    "ota": "node scripts/ota.mjs"
+  },
+  "dependencies": {
+    "@enruta2/domain": "workspace:*",
+    "@enruta2/ui": "workspace:*",
+    "@expo-google-fonts/hanken-grotesk": "^0.4.3",
+    "expo": "~58.0.23",
+    "expo-constants": "~58.0.15",
+    "expo-font": "~58.0.11",
+    "expo-linking": "~58.0.16",
+    "expo-router": "~58.0.30",
+    "expo-status-bar": "~58.0.4",
+    "expo-updates": "~58.0.21",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-safe-area-context": "~5.11.1",
+    "react-native-screens": "~4.30.1",
+    "react-native-svg": "15.16.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "eslint": "catalog:",
+    "eslint-config-expo": "~58.0.4",
+    "eslint-config-prettier": "^10.1.8",
+    "typescript": "catalog:"
+  }
+}

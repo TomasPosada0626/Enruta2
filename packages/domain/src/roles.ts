@@ -10,7 +10,7 @@ export type Role = (typeof Role)[keyof typeof Role];
 
 export const ROLES: readonly Role[] = Object.values(Role);
 
-/** Nombres de los roles en español de Colombia, compartidos por ambas apps. */
+/** Nombres de los roles en español de Colombia, compartidos por los dos modos de la app. */
 export const ROLE_LABELS: Readonly<Record<Role, string>> = {
   ADMIN: 'Administrador',
   DRIVER: 'Conductor',
@@ -18,8 +18,8 @@ export const ROLE_LABELS: Readonly<Record<Role, string>> = {
   GUARDIAN: 'Acudiente',
 };
 
-/** Roles que atiende la app del conductor (ADR 0002). */
+/** Roles que entran al modo conductor de la app (ADR 0011). */
 export const DRIVER_APP_ROLES: readonly Role[] = [Role.ADMIN, Role.DRIVER, Role.MONITOR];
 
-/** Roles que atiende la app de acudientes (ADR 0002). */
+/** Roles que entran al modo acudiente de la app (ADR 0011). */
 export const GUARDIAN_APP_ROLES: readonly Role[] = [Role.GUARDIAN];

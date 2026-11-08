@@ -169,6 +169,50 @@ export const IconoUbicacion = crearIcono(
   ),
   2.2,
 );
+export const IconoCalendario = crearIcono(() => (
+  <>
+    <Rect x={3} y={5} width={18} height={16} rx={3} />
+    <Path d="M3 10h18M8 3v4M16 3v4" />
+  </>
+));
+export const IconoRuta = crearIcono(() => (
+  <>
+    <Circle cx={6} cy={19} r={2.5} />
+    <Circle cx={18} cy={5} r={2.5} />
+    <Path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5" />
+  </>
+));
+export const IconoPersona = crearIcono(() => (
+  <>
+    <Circle cx={12} cy={8} r={4} />
+    <Path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+  </>
+));
+export const IconoPersonas = crearIcono(() => (
+  <>
+    <Circle cx={9} cy={8} r={3.5} />
+    <Path d="M2.5 20c0-3.9 2.9-6.2 6.5-6.2s6.5 2.3 6.5 6.2" />
+    <Path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.2c2.2.7 3.5 2.8 3.5 5.8" />
+  </>
+));
+export const IconoPortapapeles = crearIcono(() => (
+  <>
+    <Rect x={5} y={4} width={14} height={17} rx={2.5} />
+    <Path d="M9 4V3h6v1M9 13l2 2 4-4" />
+  </>
+));
+export const IconoCompartir = crearIcono(() => (
+  <>
+    <Path d="M12 3v12M7 8l5-5 5 5" />
+    <Path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" />
+  </>
+));
+export const IconoSalir = crearIcono(() => (
+  <>
+    <Path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
+    <Path d="M10 8l-4 4 4 4M6 12h10" />
+  </>
+));
 export const IconoMover = crearIcono(
   () => (
     <Path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3" />

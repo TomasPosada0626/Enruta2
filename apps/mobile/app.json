@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Enruta2",
+    "slug": "enruta2",
+    "scheme": "enruta2",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "co.enruta2.app",
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "co.enruta2.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F1F3D",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
+    },
+    "plugins": ["expo-router", "expo-font"],
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "cf1390ef-b70d-46a7-a826-c8c4b142d6fa"
+      }
+    },
+    "owner": "pawfound",
+    "updates": {
+      "url": "https://u.expo.dev/cf1390ef-b70d-46a7-a826-c8c4b142d6fa"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+name: Actualización OTA
+
+# Publica la app en el canal "preview" de EAS Update en cada push a main que la cambie.
+# Los APK instalados descargan la actualización al abrirse.
+# Requiere el secreto EXPO_TOKEN (expo.dev → Account settings → Access tokens).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/ui/**'
+      - 'packages/domain/**'
+      - 'pnpm-lock.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: ota-preview
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publicar:
+    name: Publicar en el canal preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # Toma la versión de pnpm del campo "packageManager" del package.json raíz.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Publicar con EAS Update
+        working-directory: apps/mobile
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          # El mensaje va por variable de entorno para no interpolar texto del commit en el script.
+          MENSAJE: ${{ github.event.head_commit.message || 'Publicación manual' }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::warning::Falta el secreto EXPO_TOKEN; no se publicó la actualización."
+            exit 0
+          fi
+          npx -y eas-cli@27.5.0 update --channel preview --platform android \
+            --message "$(printf '%s' "$MENSAJE" | head -n 1 | cut -c1-200)" --non-interactive

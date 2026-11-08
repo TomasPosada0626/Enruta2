@@ -1,5 +1,6 @@
 {
-  "extends": "expo/tsconfig.base",
+  // Ruta directa al archivo para que el editor la encuentre aunque no resuelva los "exports" de pnpm.
+  "extends": "./node_modules/expo/tsconfig.base.json",
   "compilerOptions": {
     "strict": true,
     "noUncheckedIndexedAccess": true

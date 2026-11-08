@@ -1,0 +1,11 @@
+{
+  // Ruta directa al archivo (y no "expo/tsconfig.base") para que el editor la encuentre
+  // aunque su servidor de TypeScript no resuelva los "exports" de los paquetes de pnpm.
+  "extends": "./node_modules/expo/tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
