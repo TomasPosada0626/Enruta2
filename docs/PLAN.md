@@ -17,7 +17,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 
 ## Ajustes propuestos al spec (por decidir antes de la Fase 1)
 
-- **Paradas compartidas.** Hoy `Stop` es por estudiante. Hermanos o vecinos de la misma unidad residencial quedarían como paradas duplicadas en el mismo punto. Propuesta: `Stop` = dirección, con `StopStudent`; recogido, entregado y no salió se marcan por estudiante.
+- **Paradas compartidas** (resuelto): los estudiantes con el mismo pin quedan en una sola parada de cada recorrido; recogido, entregado y no salió se marcan por estudiante (`TripStop` y `TripStudent`, spec, secciones 10 y 12.1).
 - **Android 14+.** Además de la ubicación en segundo plano, Play Console pide declarar el tipo de servicio en primer plano (`location`). Agregarlo a la sección 14.
 - **`LocationPing` particionado por día** desde la primera migración, para borrar por retención con `DROP` de particiones en vez de `DELETE` masivos (ADR 0007).
 - **Prueba cerrada por app.** La app del conductor también necesita 12 testers; los acudientes del piloto solo cubren la suya.
@@ -27,7 +27,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 | Etapa                                          | Duración | Estado     |
 | ---------------------------------------------- | -------- | ---------- |
 | 0. Fundaciones (Fase 0)                        | 1 sem    | Completada |
-| 1. Pruebas de riesgo                           | 1 sem    | Pendiente  |
+| 1. Pruebas de riesgo                           | 1 sem    | En curso   |
 | 2. Datos, auth y permisos (Fase 1)             | 2–3 sem  | Pendiente  |
 | 3. Paradas y optimización (Fase 2)             | 2–3 sem  | Pendiente  |
 | 4. Recorrido en vivo (Fase 3)                  | 3 sem    | Pendiente  |
@@ -49,8 +49,8 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 
 Tres prototipos desechables que validan lo que podría obligar a cambiar el diseño:
 
-- [ ] **Rastreo en segundo plano** en un celular real de gama media (Xiaomi o Samsung): 30 min con la pantalla apagada, cola SQLite y envío por lotes. Requiere un _development build_ (la ubicación en segundo plano no funciona en Expo Go).
-- [ ] **OSRM y VROOM** con el Valle de Aburrá recortado con `osmium extract` (el extracto completo de Colombia necesita más memoria de la que Docker tiene en Windows). Meta: 15 paradas en menos de 2 s.
+- [ ] **Rastreo en segundo plano** en un celular real de gama media (Xiaomi o Samsung): 30 min con la pantalla apagada **y con Waze o Google Maps en primer plano** (así se usará: [ADR 0010](adr/0010-navegacion-waze-google-maps.md)), cola SQLite y envío por lotes. Probar también que la app detecta en segundo plano cuando se apaga la ubicación o se pierde la posición, y alerta al conductor (spec, sección 7.2.1). Requiere un _development build_ (la ubicación en segundo plano no funciona en Expo Go).
+- [x] **OSRM y VROOM** con el Valle de Aburrá recortado con osmium (el extracto completo de Colombia necesita más memoria de la que Docker tiene en Windows). Meta: 15 paradas en menos de 2 s. Resultado: máximo 119 ms, con los 10 municipios del valle cubiertos; el objetivo es la ruta más rápida, sin hora de entrada como restricción ([ADR 0004](adr/0004-osrm-vroom.md)).
 - [ ] **Geocodificación**: 20 direcciones reales tipo "Cra 43A # 1-50" contra 2 o 3 proveedores, para decidir el ADR 0008 con datos.
 
 ### Etapas 2 a 6

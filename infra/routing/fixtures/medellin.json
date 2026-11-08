@@ -1,0 +1,22 @@
+{
+  "nota": "Puntos públicos de referencia en el Valle de Aburrá (parques, estaciones y lugares conocidos). No son direcciones de estudiantes. Coordenadas aproximadas: OSRM las ajusta a la vía más cercana.",
+  "start": { "name": "Estación Itagüí (salida de la ruta)", "lon": -75.6066, "lat": 6.1631 },
+  "school": { "name": "Universidad EAFIT (colegio de prueba)", "lon": -75.5783, "lat": 6.2003 },
+  "stops": [
+    { "name": "Parque Lleras", "lon": -75.5677, "lat": 6.2087 },
+    { "name": "Parque de El Poblado", "lon": -75.5712, "lat": 6.2105 },
+    { "name": "Parque de Envigado", "lon": -75.5833, "lat": 6.1715 },
+    { "name": "Parque de Sabaneta", "lon": -75.6163, "lat": 6.1515 },
+    { "name": "Parque de Itagüí", "lon": -75.611, "lat": 6.172 },
+    { "name": "Parque de Belén", "lon": -75.6031, "lat": 6.2311 },
+    { "name": "Primer Parque de Laureles", "lon": -75.5904, "lat": 6.2448 },
+    { "name": "Estadio Atanasio Girardot", "lon": -75.5901, "lat": 6.2566 },
+    { "name": "Estación Floresta", "lon": -75.6026, "lat": 6.2586 },
+    { "name": "Pueblito Paisa", "lon": -75.5794, "lat": 6.2364 },
+    { "name": "Parque Berrío", "lon": -75.5683, "lat": 6.2502 },
+    { "name": "Jardín Botánico", "lon": -75.564, "lat": 6.2711 },
+    { "name": "Universidad Nacional, sede Medellín", "lon": -75.577, "lat": 6.262 },
+    { "name": "Centro Comercial El Tesoro", "lon": -75.5574, "lat": 6.1983 },
+    { "name": "Aeropuerto Olaya Herrera", "lon": -75.5906, "lat": 6.2199 }
+  ]
+}

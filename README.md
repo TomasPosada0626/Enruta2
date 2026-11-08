@@ -4,7 +4,7 @@
 
 > Se escribe **Enruta2** y se pronuncia **"enrutados"**.
 
-Plataforma móvil para **rutas escolares en Colombia**. El conductor recibe el orden óptimo de recogida y comparte su ubicación durante el recorrido; los acudientes ven en vivo dónde va la ruta y **en cuántos minutos llega a su parada**.
+Plataforma móvil para **rutas escolares en Colombia**. El conductor recibe el orden óptimo de recogida, navega parada por parada con Waze o Google Maps y comparte su ubicación durante el recorrido; los acudientes ven en vivo dónde va la ruta y **en cuántos minutos llega a su parada**.
 
 ## El problema
 
@@ -14,11 +14,11 @@ Plataforma móvil para **rutas escolares en Colombia**. El conductor recibe el o
 
 "Ver el bus en el mapa" ya lo hacen otras apps. Enruta2 se diferencia en:
 
-1. **Orden óptimo de recogida y de entrega**, con la hora de entrada al colegio como restricción.
-2. **"Hoy no va" con recálculo automático:** el acudiente avisa y el orden del conductor se actualiza.
+1. **Orden óptimo de recogida y de entrega**: la ruta más rápida por todas las paradas.
+2. **"Hoy no va" con recálculo automático:** el acudiente avisa, el conductor recibe el aviso al instante y su orden se actualiza.
 3. **Hora estimada de llegada por parada**, en vivo ("llega en 6 min").
 4. **Solo el celular:** no requiere instalar GPS en el vehículo.
-5. **Privacidad por diseño:** cada acudiente ve el vehículo y su parada, nunca las direcciones de otras familias.
+5. **Privacidad por diseño:** cada acudiente ve el vehículo, en qué parada va y cuál es la suya; nunca las direcciones ni los nombres de otras familias.
 
 ## Las dos apps
 

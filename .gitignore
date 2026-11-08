@@ -42,3 +42,7 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Datos de ruteo (mapas de OSM y archivos de OSRM) y log de vroom-express
+infra/routing/data/
+infra/routing/vroom/access.log
