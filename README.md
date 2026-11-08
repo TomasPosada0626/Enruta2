@@ -14,7 +14,7 @@ Plataforma móvil para **rutas escolares en Colombia**. El conductor recibe el o
 
 "Ver el bus en el mapa" ya lo hacen otras apps. Enruta2 se diferencia en:
 
-1. **Orden óptimo de recogida y de entrega**, con la hora de entrada al colegio como restricción.
+1. **Orden óptimo de recogida y de entrega**: la ruta más rápida por todas las paradas.
 2. **"Hoy no va" con recálculo automático:** el acudiente avisa y el orden del conductor se actualiza.
 3. **Hora estimada de llegada por parada**, en vivo ("llega en 6 min").
 4. **Solo el celular:** no requiere instalar GPS en el vehículo.

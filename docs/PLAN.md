@@ -50,7 +50,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 Tres prototipos desechables que validan lo que podría obligar a cambiar el diseño:
 
 - [ ] **Rastreo en segundo plano** en un celular real de gama media (Xiaomi o Samsung): 30 min con la pantalla apagada, cola SQLite y envío por lotes. Requiere un _development build_ (la ubicación en segundo plano no funciona en Expo Go).
-- [x] **OSRM y VROOM** con el Valle de Aburrá recortado con osmium (el extracto completo de Colombia necesita más memoria de la que Docker tiene en Windows). Meta: 15 paradas en menos de 2 s. Resultado: máximo 95 ms; VROOM no avisa cuando la hora de entrada es imposible, así que Enruta2 calcula la viabilidad ([ADR 0004](adr/0004-osrm-vroom.md)).
+- [x] **OSRM y VROOM** con el Valle de Aburrá recortado con osmium (el extracto completo de Colombia necesita más memoria de la que Docker tiene en Windows). Meta: 15 paradas en menos de 2 s. Resultado: máximo 119 ms, con los 10 municipios del valle cubiertos; el objetivo es la ruta más rápida, sin hora de entrada como restricción ([ADR 0004](adr/0004-osrm-vroom.md)).
 - [ ] **Geocodificación**: 20 direcciones reales tipo "Cra 43A # 1-50" contra 2 o 3 proveedores, para decidir el ADR 0008 con datos.
 
 ### Etapas 2 a 6

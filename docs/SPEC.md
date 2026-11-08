@@ -34,7 +34,7 @@ Ya existen apps de seguimiento de rutas escolares en Colombia y la región (Bus 
 
 ### 2.3 Diferenciadores de Enruta2
 
-1. **Optimización del orden de recogida** (y de entrega en la vuelta), con hora de entrada al colegio como restricción.
+1. **Optimización del orden de recogida** (y de entrega en la vuelta): la ruta más rápida por todas las paradas.
 2. **"Hoy no va" con recálculo automático:** el acudiente avisa, la parada sale del recorrido y el orden se recalcula.
 3. **Hora estimada de llegada en vivo por parada** ("llega en 6 min"), que a los papás les importa más que el mapa.
 4. **Solo el celular:** no requiere instalar GPS en el vehículo.
@@ -250,7 +250,7 @@ flowchart LR
 | Número de apps   | Dos (conductor y acudientes)                  | Una con roles               | Aísla el permiso de ubicación en segundo plano en una sola app                                                     |
 | Backend          | NestJS + PostgreSQL + PostGIS + Prisma        | Express, Drizzle            | Estructura modular, buen soporte de WebSockets y OpenAPI                                                           |
 | Tiempo real      | Socket.IO + Redis adapter                     | Firebase, Supabase Realtime | Control total de la autorización por sala; escala horizontal con Redis                                             |
-| Optimización     | OSRM + VROOM (Docker)                         | Google Routes API, OR-Tools | Código abierto, sin costo por uso, soporta ventanas de tiempo y rutas abiertas                                     |
+| Optimización     | OSRM + VROOM (Docker)                         | Google Routes API, OR-Tools | Código abierto, sin costo por uso, soporta rutas abiertas y tiempo de servicio por parada                          |
 | Mapas en la app  | `react-native-maps` (Google en Android)       | MapLibre                    | Más rápido de integrar. Confirmar precios vigentes del SDK de mapas en el ADR                                      |
 | Geocodificación  | Detrás de una interfaz; proveedor por decidir | Google Geocoding, Nominatim | Las direcciones colombianas exigen confirmar el pin manualmente en cualquier caso                                  |
 | Permisos         | CASL                                          | Chequeos manuales por rol   | Reglas declarativas compartidas entre API y apps                                                                   |
@@ -287,7 +287,7 @@ flowchart LR
 | `Student`           | organizationId, firstName, lastName                                                                                                                                      | Mínimo de datos necesarios                             |
 | `StudentGuardian`   | studentId, userId (acudiente), relationship                                                                                                                              |                                                        |
 | `Stop`              | routeId, studentId, addressText, location, confirmedAt, serviceSeconds                                                                                                   | `location` confirmada por el usuario                   |
-| `RouteOptimization` | routeId, orderedStopIds, totalDurationSec, totalDistanceM, feasible, computedAt, engine (`VROOM`/`HEURISTIC`)                                                            | Historial de cálculos                                  |
+| `RouteOptimization` | routeId, orderedStopIds, totalDurationSec, totalDistanceM, computedAt, engine (`VROOM`/`HEURISTIC`)                                                                      | Historial de cálculos                                  |
 | `Trip`              | routeId, date, status (`SCHEDULED`/`IN_PROGRESS`/`COMPLETED`/`CANCELLED`), trackingUserId, startedAt, endedAt                                                            | Una ejecución de la ruta                               |
 | `TripStop`          | tripId, stopId, sequence, status, etaAt, arrivedAt, completedAt, completedById                                                                                           | Estado por parada en el recorrido                      |
 | `LocationPing`      | tripId, location, speed, heading, accuracy, recordedAt, receivedAt                                                                                                       | Se borra por retención; considerar partición por fecha |
@@ -354,10 +354,10 @@ Al conductor y al admin se les emite la vista completa (todas las paradas) en un
 
 ### 12.1 Optimización del orden
 
-- **Problema:** viajante con ventanas de tiempo para **un vehículo** (TSP-TW), resuelto con VROOM sobre la matriz de tiempos de OSRM.
-- **Ida:** inicio en `Route.startLocation` (o la primera parada), una tarea por parada con tiempo de servicio y **fin en el colegio**, sin ventana de tiempo en el vehículo.
+- **Problema:** viajante para **un vehículo** (TSP), resuelto con VROOM sobre la matriz de tiempos de OSRM. **Objetivo:** la ruta más rápida (menor duración total) pasando por todas las paradas. La hora de entrada al colegio no es una restricción.
+- **Ida:** inicio en `Route.startLocation` (o la primera parada), una tarea por parada con tiempo de servicio y **fin en el colegio**.
 - **Vuelta:** inicio en el colegio, una tarea por parada, **ruta abierta** (sin punto final).
-- **Viabilidad:** VROOM no avisa cuando la hora de entrada es imposible; deja paradas sin asignar ([ADR 0004](adr/0004-osrm-vroom.md)). Por eso se calcula el orden de menor duración con todas las paradas y, si la llegada al colegio supera la hora de entrada menos un margen → `feasible = false` y aviso: _"Con estas paradas la ruta no alcanza a llegar a tiempo"_.
+- **Sin ventanas de tiempo:** con una ventana imposible, VROOM deja paradas sin asignar en vez de avisar ([ADR 0004](adr/0004-osrm-vroom.md)). Un resultado con paradas sin asignar es un error, nunca una ruta válida.
 - **Respaldo:** heurística en `packages/domain` (vecino más cercano + 2-opt) para cuando VROOM no esté disponible. Sus tests comparan la calidad contra VROOM en casos de prueba.
 - **Recálculo:** al cambiar estudiantes de la ruta o con un "hoy no va" durante un recorrido (solo sobre las paradas pendientes, desde la posición actual).
 
@@ -464,11 +464,11 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 
 - Geocodificación detrás de una interfaz y confirmación del pin en el mapa (app del conductor).
 - OSRM con el Valle de Aburrá (recorte del extracto de Colombia de OpenStreetMap) y VROOM en Docker. Ya montados en la Etapa 1 del plan (`infra/routing`); en esta fase la API los empieza a usar.
-- Endpoint de optimización para ida y vuelta, con aviso de inviabilidad.
+- Endpoint de optimización para ida y vuelta.
 - Heurística de respaldo en `packages/domain` con tests.
 - Lista y mapa del orden óptimo en la app del conductor.
 
-**Aceptación:** con 15 paradas reales de prueba en Medellín, el orden se calcula en menos de 2 s y respeta la hora de entrada.
+**Aceptación:** con 15 paradas reales de prueba en Medellín, la ruta más rápida se calcula en menos de 2 s, con todas las paradas incluidas.
 
 ### Fase 3 — Recorrido en vivo
 
