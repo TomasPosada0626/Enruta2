@@ -52,12 +52,12 @@ Ya existen apps de seguimiento de rutas escolares en Colombia y la región (Bus 
 
 Los roles son **por organización**: una persona puede ser administradora en una organización y acudiente en otra.
 
-| Rol                     | App        | Puede                                                                                                                                                     |
-| ----------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ADMIN`                 | Conductor  | Gestionar vehículos, rutas, estudiantes, conductores, acompañantes e invitaciones de su organización; ver todos los recorridos de su organización         |
-| `DRIVER` (conductor)    | Conductor  | Ver sus rutas, iniciar y finalizar recorridos, compartir ubicación, marcar cada parada **solo estando en la dirección**                                   |
-| `MONITOR` (acompañante) | Conductor  | Marcar recogido, entregado o no salió; compartir ubicación si el recorrido usa su celular                                                                 |
-| `GUARDIAN` (acudiente)  | Acudientes | Ver el vehículo en vivo, en qué parada va y la hora estimada de su parada, recibir notificaciones, marcar "hoy no va", gestionar su autorización de datos |
+| Rol                     | App        | Puede                                                                                                                                                                                           |
+| ----------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADMIN`                 | Conductor  | Gestionar vehículos, rutas, estudiantes, conductores, acompañantes e invitaciones de su organización; ver todos los recorridos de su organización                                               |
+| `DRIVER` (conductor)    | Conductor  | Ver sus rutas, iniciar y finalizar recorridos, compartir ubicación, marcar cada parada **solo estando en la dirección**                                                                         |
+| `MONITOR` (acompañante) | Conductor  | Marcar recogido, entregado o no salió; compartir ubicación si el recorrido usa su celular                                                                                                       |
+| `GUARDIAN` (acudiente)  | Acudientes | Ver el vehículo en vivo, en qué parada va y la hora estimada de su parada, recibir notificaciones, marcar "hoy no va", llamar al conductor o al acompañante, gestionar su autorización de datos |
 
 **Caso especial:** un conductor independiente es una organización de una sola persona, con los roles `ADMIN` y `DRIVER` a la vez.
 
@@ -110,6 +110,7 @@ Los roles son **por organización**: una persona puede ser administradora en una
 - G3. Como acudiente, recibo notificaciones: la ruta salió, **va en camino a mi dirección** (con la hora estimada), va llegando (~5 min), llegó (automático, por GPS), mi hijo fue recogido, llegó al colegio, va de vuelta y llegó a casa.
 - G4. Como acudiente, marco **"hoy no va"** para la ida, incluso con el recorrido en curso. La app me pregunta _"¿Confirmas que Pablo no va hoy?"_, con la casilla **Tampoco regresa** para sacarlo también de la vuelta. La parada sale del recorrido, el conductor recibe el aviso y ve el orden recalculado.
 - G5. Como acudiente, marco **"no regresa en la ruta"** cuando mi hijo sí fue a la ida pero no vuelve en la ruta (por ejemplo, si lo recojo en el colegio), hasta que la ruta salga del colegio.
+- G6. Como acudiente, llamo con un botón al conductor o al acompañante de la ruta de mi hijo.
 
 **Sistema**
 
@@ -160,7 +161,7 @@ Antes de salir del colegio o durante la vuelta, el conductor o el acompañante p
 5. Si el conductor iba **en camino a esa parada**, el aviso dice _"{nombre} no va hoy. Puedes seguir a la siguiente parada."_ y se habilita **Ir a la siguiente** desde donde está, sin pasar por la dirección.
 6. No hay hora de corte: se acepta hasta que la parada de la ida se marque (recogido o no salió).
 7. **Vuelta:** si no se marcó **Tampoco regresa**, el estudiante aparece en la vuelta con la señal _"No fue a la ida"_. El conductor o el acompañante puede marcar que **no va en la ruta de regreso**, antes de salir del colegio o durante la vuelta: la parada pasa a `EXCUSED`, se recalcula el orden y el acudiente recibe el aviso (sección 13), por si es un error. Ese marcado no exige estar en la dirección.
-8. **"No regresa en la ruta"** (el acudiente, solo la vuelta): para cuando el estudiante sí fue a la ida pero no vuelve en la ruta. La app pregunta _"¿Confirmas que {nombre} no regresa hoy en la ruta?"_ y al conductor le llega _"{nombre} no regresa hoy en la ruta."_ Se acepta **hasta que la vuelta inicia**; después, el botón queda desactivado con _"La ruta ya salió del colegio. Comunícate con el conductor."_, porque el estudiante puede ir ya a bordo y saltar su parada sería peligroso.
+8. **"No regresa en la ruta"** (el acudiente, solo la vuelta): para cuando el estudiante sí fue a la ida pero no vuelve en la ruta. La app pregunta _"¿Confirmas que {nombre} no regresa hoy en la ruta?"_ y al conductor le llega _"{nombre} no regresa hoy en la ruta."_ Se acepta **hasta que la vuelta inicia**; después, el botón queda desactivado con _"La ruta ya salió del colegio. Comunícate con el conductor."_ y los botones para llamar (sección 6.6), porque el estudiante puede ir ya a bordo y saltar su parada sería peligroso.
 9. **Deshacer:** el acudiente puede quitar un aviso hasta que inicie ese recorrido. Después debe comunicarse con el conductor: volver a meter una parada en pleno recorrido no se hace desde la app de acudientes.
 
 ### 6.4 Onboarding del acudiente
@@ -174,18 +175,27 @@ Invitación (enlace o código) → registro → **autorización de tratamiento d
 - El progreso: _"Va en la parada 3 de 12 · la tuya es la 7"_, y la hora estimada de llegada a su parada.
 - Nada sobre las demás paradas: ni nombres, ni direcciones, ni si alguien fue recogido o entregado.
 
-### 6.6 Dónde se avisan las ausencias (app de acudientes)
+### 6.6 Tarjeta de cada hijo (app de acudientes)
 
-En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy, uno por fila:
+En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy, uno por fila, y los botones para llamar:
 
 ```
-┌ Pablo ─────────────────────────────────────┐
+┌ Pablo ──────────────────────────────────────┐
 │ 🚐 Ida       En camino · llega en 8 min     │
 │                              [ Hoy no va ]  │
 │ 🏠 Regreso   Sale del colegio ~12:30 p. m.  │
 │                   [ No regresa en la ruta ] │
+│ 📞 [ Acompañante Ana ] [ Conductor Luis ]   │
 └──────────────── Avisar para otro día ───────┘
 ```
+
+**Llamar:**
+
+- Los botones abren el marcador del celular con el número del conductor o del acompañante asignados al recorrido de ese día (o los de la ruta, si aún no hay recorrido). Si la ruta no tiene acompañante, solo aparece el del conductor.
+- **Con el recorrido en curso y el vehículo en movimiento**, el botón del conductor pregunta primero: _"Luis está manejando. Si es urgente, llama a Ana, la acompañante."_, con **Llamar a Ana** y **Llamar igual**. Sin acompañante: _"Luis está manejando y puede que no conteste. ¿Llamar igual?"_
+- Las notificaciones que piden comunicarse con el conductor (no salió, no va en el regreso) abren esta tarjeta.
+
+**Ausencias:**
 
 - **Hoy no va** abre la confirmación de la ida con la casilla **Tampoco regresa**; **No regresa en la ruta**, la de la vuelta (sección 6.3).
 - Un botón que ya no aplica (la parada ya se marcó o la vuelta ya salió del colegio) queda desactivado y dice por qué.
@@ -199,6 +209,7 @@ En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy,
 ### 7.1 Privacidad y seguridad (prioridad máxima)
 
 - Autorización expresa del acudiente guardada con versión del texto y fecha (`Consent`).
+- Los acudientes ven el nombre y el teléfono del conductor y del acompañante **solo** de las rutas de sus hijos. El conductor y el acompañante lo autorizan al aceptar su invitación (`Membership.phoneSharingAcceptedAt`); sin esa autorización no se pueden asignar a una ruta.
 - Un acudiente **solo** recibe: posición del vehículo, su parada, la hora estimada de su parada y el progreso del recorrido (número de la parada actual, total de paradas y número de la suya). Nunca la lista de paradas, ni direcciones, nombres o estados (recogido, entregado) de otros estudiantes.
 - A Waze o Google Maps solo salen las coordenadas de la parada siguiente, desde el celular del conductor; nunca nombres.
 - La ubicación en vivo solo existe mientras el `Trip` está `IN_PROGRESS`, y cada acudiente la ve solo hasta que dejan a su hijo (sección 6.5). Después, el servidor lo saca de la sala y no lo deja volver a unirse.
@@ -331,7 +342,7 @@ flowchart LR
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Organization`      | name, nit (opcional)                                                                                                                                                     | Empresa o conductor independiente                                                                                                                  |
 | `User`              | email, passwordHash, fullName, phone                                                                                                                                     |                                                                                                                                                    |
-| `Membership`        | userId, organizationId, role (`ADMIN`/`DRIVER`/`MONITOR`/`GUARDIAN`)                                                                                                     | Roles por organización                                                                                                                             |
+| `Membership`        | userId, organizationId, role (`ADMIN`/`DRIVER`/`MONITOR`/`GUARDIAN`), phoneSharingAcceptedAt                                                                             | Roles por organización; `phoneSharingAcceptedAt` para conductores y acompañantes                                                                   |
 | `Vehicle`           | organizationId, plate, capacity                                                                                                                                          |                                                                                                                                                    |
 | `School`            | organizationId, name, addressText, location                                                                                                                              |                                                                                                                                                    |
 | `Route`             | organizationId, schoolId, vehicleId, name, shift (`AM`/`PM`), direction (`TO_SCHOOL`/`TO_HOME`), schoolTime, defaultDriverId, defaultMonitorId, startLocation (opcional) | Plantilla recurrente; `schoolTime` es informativa                                                                                                  |
@@ -382,7 +393,7 @@ Las transiciones inválidas se rechazan con error de dominio. Cada transición r
 | `POST/PATCH/DELETE` | `/routes/:routeId/stops`                         | ADMIN                                                                                                                                               |
 | `POST`              | `/geocoding/search`                              | ADMIN                                                                                                                                               |
 | `POST`              | `/routes/:routeId/optimize`                      | ADMIN, DRIVER                                                                                                                                       |
-| `GET`               | `/me/trips/today`                                | DRIVER, MONITOR, GUARDIAN (cada uno ve lo suyo)                                                                                                     |
+| `GET`               | `/me/trips/today`                                | DRIVER, MONITOR, GUARDIAN (cada uno ve lo suyo; el acudiente recibe además el nombre y el teléfono del conductor y del acompañante)                 |
 | `POST`              | `/trips/:tripId/start`, `/trips/:tripId/finish`  | DRIVER                                                                                                                                              |
 | `POST`              | `/trips/:tripId/locations` (lote)                | Usuario que hace el rastreo                                                                                                                         |
 | `POST`              | `/trips/:tripId/stops/:tripStopId/events`        | MONITOR, DRIVER                                                                                                                                     |
@@ -560,6 +571,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 - Cálculo de hora estimada por parada.
 - GPS siempre activo: requisitos para iniciar, alerta al conductor si se apaga y aviso al admin si el recorrido deja de enviar ubicación (sección 7.2.1).
 - Mapa en vivo en la app de acudientes: vehículo, su parada y el progreso ("parada 3 de 12"), nada más, y solo hasta que dejan a su hijo.
+- Botones para llamar al conductor o al acompañante en la tarjeta de cada hijo (sección 6.6).
 
 **Aceptación:** con la pantalla apagada o Waze en primer plano durante 30 min, el rastreo no se interrumpe; un acudiente de otro recorrido no puede unirse a la sala.
 
