@@ -128,6 +128,7 @@ export default function Entrar() {
               alto={40}
               tamanoTexto={14}
               estilo={{ alignSelf: 'flex-end', paddingHorizontal: 0 }}
+              onPress={() => router.push('/acudiente/recuperar')}
             />
           </View>
 
@@ -147,7 +148,7 @@ export default function Entrar() {
             alto={52}
             tamanoTexto={16}
             icono={<IconoEnlace tamano={18} color={colores.naranjaIcono} />}
-            onPress={() => router.push('/acudiente/inscripcion/estudiante')}
+            onPress={() => router.push('/acudiente/registro')}
           />
         </ScrollView>
       </Hoja>

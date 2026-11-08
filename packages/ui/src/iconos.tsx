@@ -219,3 +219,10 @@ export const IconoMover = crearIcono(
   ),
   2.2,
 );
+
+export const IconoSobre = crearIcono(() => (
+  <>
+    <Rect x={3} y={5} width={18} height={14} rx={3} />
+    <Path d="M4 7l8 6 8-6" />
+  </>
+));

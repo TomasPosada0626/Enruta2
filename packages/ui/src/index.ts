@@ -17,3 +17,4 @@ export {
 } from './componentes';
 export { ANCHO_DISENO, MapaIlustrado, type MapaIlustradoProps, type Punto } from './MapaIlustrado';
 export { BarraPestanas, Fila, type ItemPestana } from './Pestanas';
+export { CampoCodigo, type CampoCodigoProps } from './CampoCodigo';

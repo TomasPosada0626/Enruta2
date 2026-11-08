@@ -20,6 +20,9 @@ export const colores = {
   superficie: '#F6F7F9',
   marinoSuave: '#E3E8F2',
   blanco: '#FFFFFF',
+  /** Error: código incorrecto o dato inválido (4.5:1 sobre blanco y sobre errorSuave). */
+  error: '#B42318',
+  errorSuave: '#FEF3F2',
   velo: 'rgba(15,31,61,0.55)',
   blancoTenue: 'rgba(255,255,255,0.12)',
   blancoMedio: 'rgba(255,255,255,0.2)',

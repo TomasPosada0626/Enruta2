@@ -5,9 +5,7 @@ import {
   colores,
   Hoja,
   IconoFlecha,
-  IconoInfo,
   IconoOjo,
-  Nota,
   PinLogo,
   Texto,
 } from '@enruta2/ui';
@@ -91,22 +89,32 @@ export default function Entrar() {
             autoCapitalize="none"
             autoComplete="email"
           />
-          <Campo
-            etiqueta="Contraseña"
-            value={clave}
-            onChangeText={setClave}
-            secureTextEntry={!verClave}
-            autoComplete="password"
-            derecha={
-              <BotonIcono
-                accessibilityLabel={verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                onPress={() => setVerClave((v) => !v)}
-                plano
-              >
-                <IconoOjo tamano={20} color={colores.gris} />
-              </BotonIcono>
-            }
-          />
+          <View style={{ gap: 4 }}>
+            <Campo
+              etiqueta="Contraseña"
+              value={clave}
+              onChangeText={setClave}
+              secureTextEntry={!verClave}
+              autoComplete="password"
+              derecha={
+                <BotonIcono
+                  accessibilityLabel={verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  onPress={() => setVerClave((v) => !v)}
+                  plano
+                >
+                  <IconoOjo tamano={20} color={colores.gris} />
+                </BotonIcono>
+              }
+            />
+            <Boton
+              titulo="¿Olvidaste tu contraseña?"
+              variante="texto"
+              alto={40}
+              tamanoTexto={14}
+              estilo={{ alignSelf: 'flex-end', paddingHorizontal: 0 }}
+              onPress={() => router.push('/conductor/recuperar')}
+            />
+          </View>
 
           <Boton
             titulo="Entrar"
@@ -117,9 +125,20 @@ export default function Entrar() {
             onPress={() => router.replace('/conductor/hoy')}
           />
 
-          <Nota
-            icono={<IconoInfo tamano={18} />}
-            texto="¿Primera vez? Abre la invitación que te envió la empresa de transporte."
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 }}>
+            <View style={{ flex: 1, height: 1, backgroundColor: colores.lineaSuave }} />
+            <Texto tamano={13} color={colores.gris}>
+              ¿Primera vez?
+            </Texto>
+            <View style={{ flex: 1, height: 1, backgroundColor: colores.lineaSuave }} />
+          </View>
+
+          <Boton
+            titulo="Crear mi cuenta"
+            variante="contornoNaranja"
+            alto={52}
+            tamanoTexto={16}
+            onPress={() => router.push('/conductor/registro')}
           />
         </ScrollView>
       </Hoja>
