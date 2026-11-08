@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "correo": "nest build && node dist/mail/preview.js",
+    "correo:imagenes": "node scripts/mail-images.mjs"
   },
   "dependencies": {
     "@enruta2/domain": "workspace:*",
@@ -35,6 +37,7 @@
     "@enruta2/config": "workspace:*",
     "@nestjs/cli": "^12.0.11",
     "@nestjs/testing": "^12.3.3",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/express": "^5.0.6",
     "@types/node": "catalog:",
     "@types/pg": "^8.23.1",

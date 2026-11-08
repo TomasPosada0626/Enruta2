@@ -24,7 +24,8 @@
     "routing:benchmark": "node infra/routing/benchmark.mjs",
     "movil": "pnpm --filter @enruta2/mobile start",
     "apk": "pnpm --filter @enruta2/mobile apk",
-    "ota": "pnpm --filter @enruta2/mobile ota"
+    "ota": "pnpm --filter @enruta2/mobile ota",
+    "correo": "pnpm --filter @enruta2/api correo"
   },
   "devDependencies": {
     "prettier": "^3.9.10",

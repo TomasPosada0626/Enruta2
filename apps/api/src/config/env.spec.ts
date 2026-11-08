@@ -29,4 +29,30 @@ describe('validateEnv', () => {
   it('rechaza un nivel de log desconocido', () => {
     expect(() => validateEnv({ ...valid, LOG_LEVEL: 'verbose' })).toThrow(/LOG_LEVEL/);
   });
+
+  it('acepta la configuración de Resend', () => {
+    const env = validateEnv({
+      ...valid,
+      RESEND_API_KEY: 're_123abc',
+      MAIL_FROM: 'Enruta2 <no-responder@correo.enruta2.co>',
+      MAIL_REPLY_TO: 'soporte@enruta2.co',
+    });
+    expect(env.RESEND_API_KEY).toBe('re_123abc');
+  });
+
+  it('rechaza una clave que no es de Resend', () => {
+    expect(() => validateEnv({ ...valid, RESEND_API_KEY: 'sk_live_123' })).toThrow(
+      /RESEND_API_KEY/,
+    );
+  });
+
+  it('exige Resend y el remitente en producción', () => {
+    expect(() => validateEnv({ ...valid, NODE_ENV: 'production' })).toThrow(
+      /RESEND_API_KEY[\s\S]*MAIL_FROM/,
+    );
+  });
+
+  it('en desarrollo funciona sin Resend', () => {
+    expect(validateEnv(valid).RESEND_API_KEY).toBeUndefined();
+  });
 });

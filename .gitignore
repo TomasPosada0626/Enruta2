@@ -46,3 +46,6 @@ Thumbs.db
 # Datos de ruteo (mapas de OSM y archivos de OSRM) y log de vroom-express
 infra/routing/data/
 infra/routing/vroom/access.log
+
+# Correos de desarrollo y vistas previas (apps/api/tmp)
+tmp/

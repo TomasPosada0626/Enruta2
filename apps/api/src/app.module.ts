@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { type Env, validateEnv } from './config/env.js';
 import { HealthModule } from './health/health.module.js';
+import { MailModule } from './mail/mail.module.js';
 import { createLoggerParams } from './observability/logger.js';
 
 @Module({
@@ -17,6 +18,7 @@ import { createLoggerParams } from './observability/logger.js';
         }),
     }),
     HealthModule,
+    MailModule,
   ],
 })
 export class AppModule {}
