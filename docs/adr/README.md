@@ -15,3 +15,4 @@ Cada decisión que cambia la forma del sistema queda escrita aquí, con su conte
 | [0009](0009-versiones-base.md)               | Versiones base: Node 26, TypeScript 6.0, NestJS 12, Expo SDK 58 | Aceptada             |
 | [0010](0010-navegacion-waze-google-maps.md)  | Navegación con Waze o Google Maps, parada por parada            | Aceptada             |
 | [0011](0011-una-app-con-seleccion-de-rol.md) | Una sola app con selección de rol                               | Aceptada             |
+| [0012](0012-correo-con-resend.md)            | Correo transaccional con Resend                                 | Aceptada             |

@@ -75,10 +75,11 @@ Más detalle en los [diagramas C4](docs/c4/README.md) y en la [especificación](
 | Optimización | OSRM + VROOM sobre OpenStreetMap (Fase 2)                                                                          |
 | Dominio      | `packages/domain`: reglas de negocio puras compartidas por API y app                                               |
 | Diseño       | `packages/ui`: tema, logo, íconos y componentes de la app (Hanken Grotesk, expo-router, react-native-svg)          |
+| Correo       | Resend (código de verificación y de recuperación), con plantillas del diseño de la app                             |
 | Calidad      | TypeScript 6 estricto, ESLint, Prettier, Vitest, GitHub Actions                                                    |
 | Monorepo     | pnpm workspaces + Turborepo                                                                                        |
 
-Las versiones y sus restricciones están en el [ADR 0009](docs/adr/0009-versiones-base.md).
+Lo que hay que crear fuera del código (dominio, Resend, Google Maps, Firebase, servidor) está en la [puesta en marcha](docs/PUESTA-EN-MARCHA.md). Las versiones y sus restricciones están en el [ADR 0009](docs/adr/0009-versiones-base.md).
 
 ## Estructura
 
@@ -129,6 +130,7 @@ pnpm movil
 Por ahora la app es un **prototipo navegable** con el diseño final y datos de ejemplo; todavía no se conecta a la API. El celular y el computador deben estar en la misma red Wi-Fi (si no, `pnpm movil --tunnel`). Qué probar:
 
 - **Conductor** («Soy conductor o acompañante»): Entrar → Iniciar recorrido → Abrir en Waze o Google Maps → «Simular llegada» → marcar a cada estudiante → Ir a la siguiente. La vuelta se arma desde «Ruta Norte · Regreso» con la lista de abordaje. La pestaña Inscripciones aprueba las solicitudes, y la pestaña Más tiene atajos de prueba para los avisos de «no va» y de GPS apagado.
+- **Crear cuenta:** «Tengo un enlace o código» (acudiente) o «Crear mi cuenta» (conductor) → datos → «Revisa tu correo» con el código de 6 dígitos (en el prototipo, `123456`). «¿Olvidaste tu contraseña?» usa el mismo código.
 - **Acudiente** («Soy acudiente»): Entrar → inicio en vivo (la hora estimada baja sola) → Hoy no va / No regresa / llamar. El selector de arriba cambia de hijo (Pablo y Emma), y la pestaña Hijos muestra la tarjeta de cada uno. «Tengo un enlace o código» (o Inscribir, en Hijos) abre la inscripción: estudiante, dirección, confirmación arrastrando el mapa y días.
 
 ### Instalar el APK y actualizar por OTA
@@ -144,17 +146,18 @@ Cada push a `main` que cambie la app publica la actualización sola ([`.github/w
 
 ### Scripts
 
-| Comando           | Qué hace                                                         |
-| ----------------- | ---------------------------------------------------------------- |
-| `pnpm dev`        | API y dominio en modo watch                                      |
-| `pnpm check`      | Lint, typecheck, tests y build de todo el monorepo (igual al CI) |
-| `pnpm test`       | Tests de todos los paquetes                                      |
-| `pnpm format`     | Formatea el código con Prettier                                  |
-| `pnpm infra:up`   | Levanta PostGIS y Redis y espera a que estén sanos               |
-| `pnpm infra:down` | Detiene la infraestructura local                                 |
-| `pnpm movil`      | Abre la app con Expo                                             |
-| `pnpm apk`        | Compila el APK de prueba en EAS                                  |
-| `pnpm ota`        | Publica una actualización OTA en el canal preview                |
+| Comando           | Qué hace                                                          |
+| ----------------- | ----------------------------------------------------------------- |
+| `pnpm dev`        | API y dominio en modo watch                                       |
+| `pnpm check`      | Lint, typecheck, tests y build de todo el monorepo (igual al CI)  |
+| `pnpm test`       | Tests de todos los paquetes                                       |
+| `pnpm format`     | Formatea el código con Prettier                                   |
+| `pnpm infra:up`   | Levanta PostGIS y Redis y espera a que estén sanos                |
+| `pnpm infra:down` | Detiene la infraestructura local                                  |
+| `pnpm movil`      | Abre la app con Expo                                              |
+| `pnpm apk`        | Compila el APK de prueba en EAS                                   |
+| `pnpm ota`        | Publica una actualización OTA en el canal preview                 |
+| `pnpm correo`     | Genera la vista previa de los correos con código (`--para` envía) |
 
 ## Avance
 

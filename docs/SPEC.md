@@ -185,7 +185,7 @@ La vuelta se arma en el colegio con la **lista de abordaje**:
 
 **Inscribir (acudiente).**
 
-1. Abre el enlace o pone el código en la app (modo acudiente) → crea su cuenta con **correo y contraseña** → **autorización de tratamiento de datos** (versionada, con fecha) → permiso de notificaciones.
+1. Abre el enlace o pone el código en la app (modo acudiente) → crea su cuenta con **correo y contraseña** → **confirma el correo con el código de 6 dígitos** que le llega (sección 6.7) → **autorización de tratamiento de datos** (versionada, con fecha) → permiso de notificaciones.
 2. Datos del estudiante: nombres y apellidos (lo mínimo necesario).
 3. **Dirección exacta**, en campos separados para que se ubique bien en el mapa:
    - Municipio (uno de los 10 del Valle de Aburrá) y barrio.
@@ -195,7 +195,7 @@ La vuelta se arma en el colegio con la **lista de abordaje**:
    - **Confirmar en el mapa:** la app ubica la dirección y pregunta _"¿Aquí recogen a Pablo?"_. Si el punto no es (las direcciones colombianas tipo "Cra 43A # 1-50" se ubican mal con frecuencia), el acudiente mueve el mapa hasta la entrada correcta, por ejemplo la portería de la unidad, y confirma. **Esa ubicación queda confirmada para el conductor.**
 4. **Recorridos y días:** ida y vuelta por separado, cada uno con su dirección y sus días. Por ejemplo: ida de lunes a viernes desde la casa de la mamá; vuelta de lunes a miércoles a la casa de la mamá y jueves y viernes a la del papá. Una dirección que queda en otra ruta se inscribe con el enlace de esa ruta.
 5. Envía → la inscripción queda **pendiente**, y así lo dice la tarjeta de su hijo.
-6. **Agregar acudiente** (solo el acudiente principal, el que inscribió al estudiante): la app genera un enlace y abre el menú de compartir del celular (WhatsApp, SMS o correo). El invitado abre el enlace, crea su cuenta con correo y contraseña, acepta la autorización de datos y queda vinculado al mismo estudiante: ve su tarjeta, recibe todos sus avisos, puede marcar "hoy no va" y llamar. Cambiar direcciones o días, retirar la inscripción y agregar o quitar acudientes queda para el principal, que puede pasarle ese papel a otro acudiente. Un estudiante puede tener dos o más acudientes.
+6. **Agregar acudiente** (solo el acudiente principal, el que inscribió al estudiante): la app genera un enlace y abre el menú de compartir del celular (WhatsApp, SMS o correo). El invitado abre el enlace, crea su cuenta con correo y contraseña, la confirma con el código del correo, acepta la autorización de datos y queda vinculado al mismo estudiante: ve su tarjeta, recibe todos sus avisos, puede marcar "hoy no va" y llamar. Cambiar direcciones o días, retirar la inscripción y agregar o quitar acudientes queda para el principal, que puede pasarle ese papel a otro acudiente. Un estudiante puede tener dos o más acudientes.
 
 **Aprobar (admin).**
 
@@ -250,6 +250,40 @@ En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy,
 - Un aviso hecho se muestra en su fila (_"Avisaste que no va · Deshacer"_), con **Deshacer** mientras ese recorrido no haya iniciado.
 - **Avisar para otro día** (citas médicas, viajes): se elige la fecha y las mismas dos opciones.
 
+### 6.7 Crear la cuenta y verificar el correo
+
+Vale para los dos modos de la app. Una cuenta **no se activa** hasta que la persona escribe el código de 6 dígitos que le llega al correo: así se comprueba que el correo es suyo antes de mostrarle cualquier dato.
+
+**Quién crea cuenta y desde dónde:**
+
+| Quién                                  | Entra por                                                            | Queda con                                      |
+| -------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| Acudiente                              | **Tengo un enlace o código** (ruta) o el enlace de otro acudiente    | Rol `GUARDIAN` al aprobarse la inscripción     |
+| Conductor o acompañante de una empresa | **Crear mi cuenta** → _Me invitó una empresa_ + código de invitación | El rol de la invitación (`DRIVER` o `MONITOR`) |
+| Conductor independiente                | **Crear mi cuenta** → _Soy independiente_ + nombre del servicio      | Organización propia con `ADMIN` y `DRIVER`     |
+
+**Datos:** nombres, apellidos, celular (10 cifras, empieza por 3), correo y contraseña (mínimo 8 caracteres).
+
+**El código:**
+
+1. Al tocar **Crear cuenta**, la API crea la cuenta sin verificar y envía el código. La app abre **Revisa tu correo** con 6 casillas: el código se puede escribir o pegar, y al completar las 6 cifras se verifica solo.
+2. Son 6 cifras al azar (`crypto.randomInt`), vigentes **10 minutos**, de un solo uso. La API guarda solo su hash (HMAC-SHA256 con un secreto del servidor), nunca el código.
+3. **5 intentos** por código. Al quinto error el código queda bloqueado y hay que pedir otro.
+4. **Enviar un código nuevo** se habilita al minuto. Máximo 5 envíos por hora al mismo correo. Un código nuevo invalida los anteriores.
+5. Con el código correcto la cuenta queda verificada (`emailVerifiedAt`) y la app sigue: el acudiente a la inscripción del primer hijo, el conductor a sus rutas de hoy.
+6. Si alguien con la cuenta sin verificar intenta entrar, la app lo lleva a **Revisa tu correo** y se envía un código nuevo. Las cuentas que no se verifican en 7 días se borran.
+7. Si el correo ya tiene cuenta, la respuesta es la misma que para uno nuevo (no se revela quién está registrado); a ese correo le llega un aviso para entrar o recuperar la contraseña.
+
+**Recuperar la contraseña:** **¿Olvidaste tu contraseña?** → correo → el mismo código (mismas reglas, propósito `RESET_PASSWORD`) → contraseña nueva. La respuesta es la misma exista o no la cuenta, y al cambiarla se cierran las sesiones de los demás celulares (se revocan los refresh tokens).
+
+**El correo** tiene la identidad de la app según el modo de quien lo recibe:
+
+- **Acudiente:** cabecera con el mapa ilustrado (la ruta, el vehículo y _tu parada_) y la marca en una píldora blanca.
+- **Conductor:** cabecera azul marino con el «2» de fondo y la palabra _CONDUCTOR_.
+- Debajo, el mismo cuerpo: _"Hola, Laura: este es tu código"_, el código grande (`482 913`), _"Vence en 10 minutos"_, y el aviso de que nadie de Enruta2 ni de la empresa lo va a pedir por WhatsApp o por llamada.
+- Asunto: _"482913 es tu código de Enruta2"_. Lleva versión en texto plano y ningún dato de estudiantes.
+- Sale por **Resend** ([ADR 0012](adr/0012-correo-con-resend.md)) desde `no-responder@correo.<dominio>`, con SPF, DKIM y DMARC configurados. La plantilla está en `apps/api/src/mail` y `pnpm correo` genera la vista previa.
+
 ---
 
 ## 7. Requisitos no funcionales
@@ -267,6 +301,7 @@ En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy,
 - Borrado automático de puntos GPS (`LOCATION_RETENTION_DAYS`, propuesta inicial: 7).
 - Sin datos de menores en logs. Usar identificadores, no nombres ni coordenadas.
 - HTTPS, JWT de acceso corto con refresh rotativo, rate limiting, validación de toda entrada.
+- Correo verificado con un código de un solo uso antes de activar la cuenta (sección 6.7). Los códigos se guardan con hash, vencen a los 10 minutos y se bloquean a los 5 intentos; los logs nunca llevan el código ni el correo.
 
 ### 7.2 Batería y confiabilidad del rastreo
 
@@ -363,6 +398,7 @@ flowchart LR
 | Optimización     | OSRM + VROOM (Docker)                         | Google Routes API, OR-Tools | Código abierto, sin costo por uso, soporta rutas abiertas y tiempo de servicio por parada                          |
 | Mapas en la app  | `react-native-maps` (Google en Android)       | MapLibre                    | Más rápido de integrar. Confirmar precios vigentes del SDK de mapas en el ADR                                      |
 | Geocodificación  | Detrás de una interfaz; proveedor por decidir | Google Geocoding, Nominatim | Las direcciones colombianas exigen que el acudiente confirme la ubicación en el mapa en cualquier caso             |
+| Correo           | Resend (API REST, dominio verificado)         | Gmail SMTP, Amazon SES      | Gratis para el piloto, buena entrega con SPF/DKIM/DMARC y sin dependencias: se llama con `fetch` (ADR 0012)        |
 | Permisos         | CASL                                          | Chequeos manuales por rol   | Reglas declarativas compartidas entre API y apps                                                                   |
 | Monorepo         | pnpm + Turborepo                              | Nx                          | Simple y rápido                                                                                                    |
 
@@ -380,6 +416,7 @@ flowchart LR
 | 0008 | Proveedor de mapas y de geocodificación                           |
 | 0010 | Navegación con Waze o Google Maps, parada por parada              |
 | 0011 | Una sola app con selección de rol                                 |
+| 0012 | Correo transaccional con Resend                                   |
 
 ---
 
@@ -391,7 +428,8 @@ flowchart LR
 | Entidad              | Campos clave                                                                                                                                                                                             | Notas                                                                                                                                                                      |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Organization`       | name, nit (opcional)                                                                                                                                                                                     | Empresa o conductor independiente                                                                                                                                          |
-| `User`               | email, passwordHash, fullName, phone                                                                                                                                                                     |                                                                                                                                                                            |
+| `User`               | email, emailVerifiedAt, passwordHash, fullName, phone                                                                                                                                                    | Sin `emailVerifiedAt` no puede iniciar sesión (sección 6.7)                                                                                                                |
+| `EmailCode`          | userId, purpose (`VERIFY_EMAIL`/`RESET_PASSWORD`), codeHash, sentAt, expiresAt, attempts, consumedAt                                                                                                     | Código del correo: solo el hash, 10 min, 5 intentos; uno nuevo invalida los anteriores del mismo propósito                                                                 |
 | `Membership`         | userId, organizationId, role (`ADMIN`/`DRIVER`/`MONITOR`/`GUARDIAN`), phoneSharingAcceptedAt                                                                                                             | Roles por organización; `phoneSharingAcceptedAt` para conductores y acompañantes                                                                                           |
 | `Vehicle`            | organizationId, plate, capacity                                                                                                                                                                          |                                                                                                                                                                            |
 | `School`             | organizationId, name, addressText, location                                                                                                                                                              |                                                                                                                                                                            |
@@ -450,7 +488,9 @@ Las transiciones inválidas se rechazan con error de dominio. Cada transición r
 
 | Método           | Ruta                                                  | Rol                                                                                                                                 |
 | ---------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `POST`           | `/auth/register`, `/auth/login`, `/auth/refresh`      | Público                                                                                                                             |
+| `POST`           | `/auth/register`, `/auth/login`, `/auth/refresh`      | Público (`login` responde `EMAIL_NOT_VERIFIED` si falta el código)                                                                  |
+| `POST`           | `/auth/email/verify`, `/auth/email/resend`            | Público: correo + código; el reenvío respeta la espera y el límite por hora                                                         |
+| `POST`           | `/auth/password/forgot`, `/auth/password/reset`       | Público: misma respuesta exista o no la cuenta                                                                                      |
 | `POST`           | `/invitations/:code/accept`                           | Autenticado                                                                                                                         |
 | `POST/GET/PATCH` | `/organizations/:orgId/vehicles`                      | ADMIN                                                                                                                               |
 | `POST/GET/PATCH` | `/organizations/:orgId/routes`                        | ADMIN (lectura: DRIVER, MONITOR)                                                                                                    |
@@ -624,7 +664,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 ### Fase 1 — Datos, autenticación y permisos
 
 - Esquema Prisma inicial (sección 10) con migraciones.
-- Registro y login con correo y contraseña, JWT con refresh rotativo e invitaciones.
+- Registro y login con correo y contraseña, **verificación del correo con código de 6 dígitos** y recuperación de contraseña (sección 6.7), JWT con refresh rotativo e invitaciones.
 - Organizaciones, membresías y permisos CASL en `packages/domain`.
 - Vehículos, colegios y rutas con enlace y código (sección 6.4).
 - Geocodificación detrás de una interfaz (proveedor del ADR 0008) y mapa para que el acudiente confirme la ubicación al inscribirse.
