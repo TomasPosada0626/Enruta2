@@ -4,7 +4,10 @@
 # Los puertos se publican solo en 127.0.0.1 para no exponerlos a la red local.
 # PostGIS usa 15432 en el host: evita choques con PostgreSQL instalado localmente (5432, 5433)
 # y con los rangos de puertos que Windows reserva para Hyper-V.
-# OSRM y VROOM se agregan en la Fase 2.
+#
+# OSRM y VROOM están en el perfil "routing" porque necesitan datos preparados antes:
+#   pnpm routing:prepare   (una vez: descarga y procesa el mapa del Valle de Aburrá)
+#   pnpm routing:up
 
 name: enruta2
 
@@ -38,6 +41,30 @@ services:
       interval: 5s
       timeout: 3s
       retries: 12
+
+  # Tiempos y rutas por las vías reales (OpenStreetMap), con el algoritmo MLD.
+  osrm:
+    profiles: [routing]
+    image: ghcr.io/project-osrm/osrm-backend:v26.11.0-debian
+    command: osrm-routed --algorithm mld --max-table-size 1000 /data/valle-aburra.osrm
+    volumes:
+      - ./infra/routing/data:/data:ro
+    ports:
+      - '127.0.0.1:${OSRM_PORT:-5000}:5000'
+
+  # Optimización del orden de paradas (vroom-express sobre VROOM), usando OSRM.
+  vroom:
+    profiles: [routing]
+    image: ghcr.io/vroom-project/vroom-docker:v1.15.0
+    environment:
+      VROOM_ROUTER: osrm
+    volumes:
+      - ./infra/routing/vroom:/conf
+    ports:
+      # 3001 en el host porque la API usa el 3000.
+      - '127.0.0.1:${VROOM_PORT:-3001}:3000'
+    depends_on:
+      - osrm
 
 volumes:
   postgres-data:

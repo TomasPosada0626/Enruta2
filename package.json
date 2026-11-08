@@ -18,6 +18,10 @@
     "format:check": "prettier --check .",
     "infra:up": "docker compose up -d --wait",
     "infra:down": "docker compose down",
+    "routing:prepare": "node infra/routing/prepare.mjs",
+    "routing:up": "docker compose --profile routing up -d osrm vroom",
+    "routing:down": "docker compose --profile routing rm -sf osrm vroom",
+    "routing:benchmark": "node infra/routing/benchmark.mjs",
     "driver": "pnpm --filter @enruta2/driver start",
     "guardian": "pnpm --filter @enruta2/guardian start"
   },
