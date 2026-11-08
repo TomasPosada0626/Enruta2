@@ -17,6 +17,7 @@ flowchart TB
   osm["OpenStreetMap<br/>red vial de Colombia"]
   push["Expo Push / FCM<br/>notificaciones"]
   geo["Proveedor de geocodificación<br/>(ADR 0008)"]
+  nav["Waze / Google Maps<br/>navegación del conductor (ADR 0010)"]
   play["Google Play<br/>distribución de las apps"]
 
   admin -->|"registra vehículos, rutas<br/>y estudiantes"| enruta2
@@ -27,6 +28,7 @@ flowchart TB
   enruta2 -->|"calcula tiempos y rutas"| osm
   enruta2 -->|"envía notificaciones"| push
   enruta2 -->|"convierte direcciones<br/>en coordenadas"| geo
+  enruta2 -->|"abre la navegación<br/>a cada parada"| nav
   play -.->|"instala"| driver
   play -.->|"instala"| guardian
 ```
