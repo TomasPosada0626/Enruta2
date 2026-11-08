@@ -53,6 +53,10 @@ Tres prototipos desechables que validan lo que podría obligar a cambiar el dise
 - [x] **OSRM y VROOM** con el Valle de Aburrá recortado con osmium (el extracto completo de Colombia necesita más memoria de la que Docker tiene en Windows). Meta: 15 paradas en menos de 2 s. Resultado: máximo 119 ms, con los 10 municipios del valle cubiertos; el objetivo es la ruta más rápida, sin hora de entrada como restricción ([ADR 0004](adr/0004-osrm-vroom.md)).
 - [ ] **Geocodificación**: 20 direcciones reales tipo "Cra 43A # 1-50" contra 2 o 3 proveedores, para decidir el ADR 0008 con datos.
 
+Además, fuera del orden original:
+
+- [x] **Prototipo de las dos apps** con el diseño elegido (dirección F: mapa para los acudientes, encabezado azul marino para el conductor), datos de ejemplo y el paquete `packages/ui` compartido. Sirve para validar el flujo con la empresa piloto antes de construir el backend; en las fases 1 a 5 las pantallas se conectan a la API.
+
 ### Etapas 2 a 6
 
 Siguen las fases 1 a 6 del spec. Notas:

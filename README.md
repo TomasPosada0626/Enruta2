@@ -64,16 +64,17 @@ Más detalle en los [diagramas C4](docs/c4/README.md) y en la [especificación](
 
 ## Stack
 
-| Capa         | Tecnología                                                            |
-| ------------ | --------------------------------------------------------------------- |
-| Apps móviles | React Native 0.88 con Expo SDK 58 (solo Android en el MVP)            |
-| API          | NestJS 12 (ES modules), Swagger, Terminus, pino                       |
-| Datos        | PostgreSQL 18 + PostGIS 3.6, Prisma (Fase 1)                          |
-| Tiempo real  | Socket.IO con adapter de Redis (Fase 3)                               |
-| Optimización | OSRM + VROOM sobre OpenStreetMap (Fase 2)                             |
-| Dominio      | `packages/domain`: reglas de negocio puras compartidas por API y apps |
-| Calidad      | TypeScript 6 estricto, ESLint, Prettier, Vitest, GitHub Actions       |
-| Monorepo     | pnpm workspaces + Turborepo                                           |
+| Capa         | Tecnología                                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------------------------- |
+| Apps móviles | React Native 0.88 con Expo SDK 58 (solo Android en el MVP)                                                      |
+| API          | NestJS 12 (ES modules), Swagger, Terminus, pino                                                                 |
+| Datos        | PostgreSQL 18 + PostGIS 3.6, Prisma (Fase 1)                                                                    |
+| Tiempo real  | Socket.IO con adapter de Redis (Fase 3)                                                                         |
+| Optimización | OSRM + VROOM sobre OpenStreetMap (Fase 2)                                                                       |
+| Dominio      | `packages/domain`: reglas de negocio puras compartidas por API y apps                                           |
+| Diseño       | `packages/ui`: tema, logo, íconos y componentes de las dos apps (Hanken Grotesk, expo-router, react-native-svg) |
+| Calidad      | TypeScript 6 estricto, ESLint, Prettier, Vitest, GitHub Actions                                                 |
+| Monorepo     | pnpm workspaces + Turborepo                                                                                     |
 
 Las versiones y sus restricciones están en el [ADR 0009](docs/adr/0009-versiones-base.md).
 
@@ -87,6 +88,9 @@ apps/
 packages/
   config/       Configuración compartida de TypeScript y ESLint
   domain/       Reglas de negocio: roles, recorridos, máquinas de estado
+  ui/           Diseño compartido de las apps: tema, logo, íconos y componentes
+infra/
+  routing/      OSRM y VROOM: preparación del mapa del Valle de Aburrá y medición
 docs/
   SPEC.md       Especificación del producto
   PLAN.md       Plan de acción y avance por fases
@@ -121,6 +125,11 @@ Las apps se abren con Expo (escanea el código QR con Expo Go):
 pnpm driver     # Enruta2 Conductor, puerto 8081
 pnpm guardian   # Enruta2 acudientes, puerto 8082
 ```
+
+Por ahora las dos apps son un **prototipo navegable** con el diseño final y datos de ejemplo; todavía no se conectan a la API. El celular y el computador deben estar en la misma red Wi-Fi (si no, `pnpm driver --tunnel`). Qué probar:
+
+- **Conductor:** Entrar → Iniciar recorrido → Abrir en Waze o Google Maps → «Simular llegada» → marcar a cada estudiante → Ir a la siguiente. La vuelta se arma desde «Ruta Norte · Regreso» con la lista de abordaje. El menú de prueba (tu inicial, arriba a la derecha) lleva a los avisos de «no va» y GPS apagado, y a la aprobación de inscripciones.
+- **Acudientes:** Entrar → inicio en vivo (la hora estimada baja sola) → Hoy no va / No regresa / llamar. «Tengo un enlace o código» abre la inscripción: dirección, confirmación arrastrando el mapa y días.
 
 ### Scripts
 
