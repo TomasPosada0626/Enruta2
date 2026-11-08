@@ -52,12 +52,12 @@ Ya existen apps de seguimiento de rutas escolares en Colombia y la región (Bus 
 
 Los roles son **por organización**: una persona puede ser administradora en una organización y acudiente en otra.
 
-| Rol                     | App        | Puede                                                                                                                                                                                           |
-| ----------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ADMIN`                 | Conductor  | Gestionar vehículos, rutas, estudiantes, conductores, acompañantes e invitaciones de su organización; ver todos los recorridos de su organización                                               |
-| `DRIVER` (conductor)    | Conductor  | Ver sus rutas, iniciar y finalizar recorridos, compartir ubicación, marcar cada parada **solo estando en la dirección**                                                                         |
-| `MONITOR` (acompañante) | Conductor  | Marcar recogido, entregado o no salió; compartir ubicación si el recorrido usa su celular                                                                                                       |
-| `GUARDIAN` (acudiente)  | Acudientes | Ver el vehículo en vivo, en qué parada va y la hora estimada de su parada, recibir notificaciones, marcar "hoy no va", llamar al conductor o al acompañante, gestionar su autorización de datos |
+| Rol                     | App        | Puede                                                                                                                                                                                                                              |
+| ----------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADMIN`                 | Conductor  | Gestionar vehículos, rutas, conductores y acompañantes de su organización; aprobar inscripciones y confirmar el pin de cada dirección; ver todos los recorridos de su organización                                                 |
+| `DRIVER` (conductor)    | Conductor  | Ver sus rutas, armar la vuelta con la lista de abordaje, iniciar y finalizar recorridos, compartir ubicación, marcar cada parada **solo estando en la dirección**                                                                  |
+| `MONITOR` (acompañante) | Conductor  | Marcar recogido, entregado o no salió; compartir ubicación si el recorrido usa su celular                                                                                                                                          |
+| `GUARDIAN` (acudiente)  | Acudientes | Inscribir a sus hijos en una ruta, ver el vehículo en vivo, en qué parada va y la hora estimada de su parada, recibir notificaciones, marcar "hoy no va", llamar al conductor o al acompañante, gestionar su autorización de datos |
 
 **Caso especial:** un conductor independiente es una organización de una sola persona, con los roles `ADMIN` y `DRIVER` a la vez.
 
@@ -67,17 +67,20 @@ Los roles son **por organización**: una persona puede ser administradora en una
 
 ## 4. Glosario
 
-| Término                 | Significado                                                                      |
-| ----------------------- | -------------------------------------------------------------------------------- |
-| **Organización**        | Empresa de transporte (o conductor independiente) dueña de las rutas             |
-| **Ruta**                | Plantilla recurrente: vehículo, colegio, jornada, sentido y lista de estudiantes |
-| **Jornada**             | `AM` (mañana) o `PM` (tarde)                                                     |
-| **Sentido**             | `TO_SCHOOL` (ida: casas → colegio) o `TO_HOME` (vuelta: colegio → casas)         |
-| **Recorrido** (`Trip`)  | Una ejecución concreta de una ruta en una fecha                                  |
-| **Parada**              | Dirección de un estudiante dentro de una ruta                                    |
-| **Acudiente**           | Adulto responsable del estudiante                                                |
-| **Acompañante**         | Adulto que va en el vehículo y supervisa a los estudiantes                       |
-| **Hora estimada (ETA)** | Minutos que faltan para que el vehículo llegue a una parada                      |
+| Término                 | Significado                                                                                   |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| **Organización**        | Empresa de transporte (o conductor independiente) dueña de las rutas                          |
+| **Ruta**                | Servicio recurrente de un vehículo a un colegio en una jornada, de ida y de vuelta            |
+| **Jornada**             | `AM` (mañana) o `PM` (tarde)                                                                  |
+| **Sentido**             | `TO_SCHOOL` (ida: casas → colegio) o `TO_HOME` (vuelta: colegio → casas)                      |
+| **Inscripción**         | Qué estudiante va en qué ruta, en qué sentido, a qué dirección y qué días de la semana        |
+| **Dirección**           | La dirección exacta que escribe el acudiente, con el pin que confirma el admin                |
+| **Recorrido** (`Trip`)  | Una ejecución de una ruta en una fecha y un sentido                                           |
+| **Parada**              | Punto donde se recoge o se deja a uno o más estudiantes (hermanos o vecinos con el mismo pin) |
+| **Lista de abordaje**   | En la vuelta, la lista donde el conductor toca a cada estudiante que sube                     |
+| **Acudiente**           | Adulto responsable del estudiante                                                             |
+| **Acompañante**         | Adulto que va en el vehículo y supervisa a los estudiantes                                    |
+| **Hora estimada (ETA)** | Minutos que faltan para que el vehículo llegue a una parada                                   |
 
 ---
 
@@ -88,29 +91,32 @@ Los roles son **por organización**: una persona puede ser administradora en una
 **Administrador**
 
 - A1. Como admin, creo mi organización y registro vehículos (placa, capacidad).
-- A2. Como admin, creo una ruta con colegio (dirección y punto en el mapa), jornada, sentido, hora de entrada o salida (informativa: no restringe la ruta), conductor y acompañante.
-- A3. Como admin, agrego estudiantes a una ruta con su dirección. La app geocodifica la dirección y **me pide confirmar o ajustar el pin en el mapa** (las direcciones colombianas tipo "Cra 43A # 1-50" se geocodifican mal con frecuencia).
-- A4. Como admin, invito a los acudientes de cada estudiante con un enlace o código.
+- A2. Como admin, creo una ruta **sin direcciones de estudiantes**: colegio (con su pin), jornada, días de servicio, vehículo, conductor, acompañante y horas aproximadas de salida (informativas). Sirve para la ida y para la vuelta, y queda con un **enlace y un código** para invitar.
+- A3. Como admin, comparto el enlace o el código de la ruta, por ejemplo en el grupo de WhatsApp de los papás.
+- A4. Como admin, apruebo o rechazo cada inscripción: reviso la dirección y **confirmo o muevo el pin que propone la geocodificación** (las direcciones colombianas tipo "Cra 43A # 1-50" se geocodifican mal con frecuencia), o lo dejo por confirmar en la primera visita. La app no me deja aprobar un día en que el vehículo quede sin cupo.
+
+En el texto, "admin" incluye al conductor independiente, que tiene los dos roles.
 
 **Conductor y acompañante**
 
 - C1. Como conductor, veo el orden óptimo de las paradas de la ruta del día, en lista y en mapa, con la hora estimada de llegada a cada parada.
-- C2. Como conductor, recalculo el orden cuando cambian los estudiantes de la ruta.
+- C2. Como conductor, en la vuelta armo el recorrido con la **lista de abordaje**: toco a cada estudiante que sube y luego **Armar ruta**.
 - C3. Como conductor, inicio el recorrido; la app comparte la ubicación en segundo plano hasta que lo finalizo, aunque la pantalla esté apagada o Waze o Google Maps esté en primer plano.
 - C4. Como conductor o acompañante, marco en cada parada **recogido**, **entregado** o **no salió**. La app solo lo permite cuando el GPS confirma que estamos en la dirección, o con un motivo si la posición no coincide con el pin; siempre con el GPS activo.
 - C5. Como conductor, si pierdo señal, la app guarda los puntos GPS y los eventos y los envía cuando vuelve la conexión.
 - C6. Como conductor, al iniciar el recorrido elijo **Waze** o **Google Maps** y navego **una parada a la vez**: la app abre la navegación hacia la parada, me avisa cuando llego para volver a Enruta2 y, después de marcarla, habilita **Ir a la siguiente**.
 - C7. Como conductor, recibo un aviso cada vez que un acudiente marca "hoy no va" (_"Pablo no va hoy"_, o _"Pablo no va hoy y tampoco regresa"_). Si voy en camino a esa parada, sigo de una vez a la siguiente desde donde estoy.
-- C8. Como conductor o acompañante, en la vuelta marco que un estudiante **no va en la ruta de regreso** (por ejemplo, si no fue a la ida y su acudiente no marcó "tampoco regresa"); su acudiente recibe el aviso.
 
 **Acudiente**
 
-- G1. Como acudiente, acepto la invitación y doy la **autorización expresa** de tratamiento de datos de mi hijo antes de ver cualquier información.
+- G1. Como acudiente, abro el enlace o pongo el código de la ruta, creo mi cuenta con **correo y contraseña** y doy la **autorización expresa** de tratamiento de datos de mi hijo antes de cualquier otra cosa.
 - G2. Como acudiente, veo en un mapa el vehículo en vivo y mi parada, la hora estimada de llegada a mi parada y en qué parada va el recorrido (_"va en la 3 de 12; la tuya es la 7"_), sin saber quién se recogió o se entregó en las demás. Lo veo desde que sale la ruta hasta que dejan a mi hijo.
 - G3. Como acudiente, recibo notificaciones: la ruta salió, **va en camino a mi dirección** (con la hora estimada), va llegando (~5 min), llegó (automático, por GPS), mi hijo fue recogido, llegó al colegio, va de vuelta y llegó a casa.
 - G4. Como acudiente, marco **"hoy no va"** para la ida, incluso con el recorrido en curso. La app me pregunta _"¿Confirmas que Pablo no va hoy?"_, con la casilla **Tampoco regresa** para sacarlo también de la vuelta. La parada sale del recorrido, el conductor recibe el aviso y ve el orden recalculado.
 - G5. Como acudiente, marco **"no regresa en la ruta"** cuando mi hijo sí fue a la ida pero no vuelve en la ruta (por ejemplo, si lo recojo en el colegio), hasta que la ruta salga del colegio.
 - G6. Como acudiente, llamo con un botón al conductor o al acompañante de la ruta de mi hijo.
+- G7. Como acudiente, inscribo a mi hijo: su nombre, la **dirección exacta** donde lo recogen y lo dejan (sin poner pin) y los días de ida y de vuelta. Puede tener varias direcciones con días distintos (por ejemplo, la casa de la mamá y la del papá), incluso en rutas distintas.
+- G8. Como acudiente, invito al otro acudiente de mi hijo para que también reciba los avisos, sin duplicar al estudiante.
 
 **Sistema**
 
@@ -135,42 +141,78 @@ Los roles son **por organización**: una persona puede ser administradora en una
 
 El conductor hace el recorrido **una parada a la vez**, navegando con Waze o Google Maps ([ADR 0010](adr/0010-navegacion-waze-google-maps.md)).
 
-1. Antes de salir, el backend genera el `Trip` del día con las paradas activas (excluye las marcadas "hoy no va") y su orden optimizado.
+1. Antes de salir, el backend genera el `Trip` del día con las inscripciones aprobadas para ese día de la semana (y los cambios de un día), sin los estudiantes con "hoy no va". Los que comparten pin quedan en una sola parada, y se calcula el orden.
 2. El conductor toca **Iniciar recorrido** y elige **Waze** o **Google Maps** (la elección se recuerda en el celular). Arranca el rastreo en segundo plano → notificación a todos los acudientes: _"La ruta de {nombre} ya salió 🚐"_.
 3. **Ir a la parada** (la primera se abre al iniciar): Enruta2 abre Waze o Google Maps con las coordenadas de la parada → la parada pasa a `EN_ROUTE` → notificación a su acudiente: _"La ruta va en camino por {nombre}. Llega en unos {minutos} min."_
 4. Con cada lote de puntos GPS, el backend recalcula la hora estimada de **cada parada pendiente** (no la del colegio) y la emite por WebSocket.
 5. Si la hora estimada baja de ~5 min → _"va llegando"_ (solo si el aviso de "en camino" decía más de 5 min).
 6. Cuando el vehículo entra al radio de la parada → `ARRIVED` automático → notificación _"La ruta llegó por {nombre}"_. En el celular del conductor aparece _"Llegaste donde {nombre}. Toca para marcar"_, que lo devuelve a Enruta2.
-7. El conductor (o el acompañante) marca **recogido** o **no salió**. Los botones solo se habilitan si el GPS del celular confirma que está en la dirección (sección 12.3).
+7. El conductor (o el acompañante) marca a cada estudiante de la parada: **recogido** o **no salió**. Los botones solo se habilitan si el GPS del celular confirma que está en la dirección (sección 12.3).
 8. Con la parada marcada se habilita **Ir a la siguiente** → vuelve al paso 3.
 9. Después de la última parada, **Ir al colegio**. Al llegar → notificación a los acudientes de los recogidos: _"{nombre} llegó al colegio"_, y se cierra su sesión en vivo (sección 6.5).
 10. El conductor finaliza el recorrido → se detiene el rastreo y se cierra la sala de tiempo real.
 
 ### 6.2 Vuelta (`TO_HOME`)
 
-Igual, pero el vehículo sale del colegio con los estudiantes a bordo. El aviso de "en camino" dice _"{nombre} va en camino a casa. Llega en unos {minutos} min."_, en la parada se marca **entregado** (o **no salió** si nadie recibe) y el aviso final es _"{nombre} llegó a casa 🏠"_, que también cierra la sesión en vivo de ese acudiente. La vuelta termina en la última parada (ruta abierta).
+La vuelta se arma en el colegio con la **lista de abordaje**:
 
-Antes de salir del colegio o durante la vuelta, el conductor o el acompañante puede marcar que un estudiante **no va en la ruta de regreso** (sección 6.3).
+1. El conductor abre la vuelta del día. La lista trae a los inscritos para ese día de la semana. Los que avisaron "no regresa" aparecen aparte, con el aviso, y no se pueden tocar. Los que no fueron a la ida aparecen con la señal _"No fue a la ida"_.
+2. Toca a cada estudiante que sube (**Abordó**); un toque se puede deshacer.
+3. **Armar ruta** → la app confirma _"Van 12 de 14. ¿Armar la ruta?"_. Los que no se tocaron quedan como **no subió** y su acudiente recibe _"{nombre} no subió a la ruta de regreso. Si no es así, comunícate con el conductor."_ Se agrupan las paradas, se calcula el orden (menos de 1 s) y aparece **Iniciar recorrido**.
+4. Desde ahí, igual que la ida: el aviso de "en camino" dice _"{nombre} va en camino a casa. Llega en unos {minutos} min."_ y en la parada se marca a cada estudiante como **entregado**. El aviso _"{nombre} llegó a casa 🏠"_ también cierra la sesión en vivo de ese acudiente.
+5. **Nadie lo recibió:** el estudiante sigue a bordo, su acudiente recibe un aviso urgente con los botones para llamar, y la parada pasa al final del recorrido para volver a intentar.
+6. La vuelta termina en la última parada (ruta abierta). No se puede finalizar con estudiantes a bordo: si queda alguno, la app lo dice y pide registrar a quién se entregó.
 
 ### 6.3 "Hoy no va"
 
 1. El acudiente marca "hoy no va" para la ida de una fecha y jornada. La app pregunta _"¿Confirmas que {nombre} no va hoy?"_, con la casilla **Tampoco regresa** (desmarcada por defecto).
 2. **Siempre** le llega un aviso al conductor y al acompañante: _"{nombre} no va hoy."_, o _"{nombre} no va hoy y tampoco regresa."_ si marcó la casilla.
-3. Si el recorrido no ha empezado: la parada se excluye al generarlo. Con **Tampoco regresa**, también se excluye de la vuelta de esa jornada.
-4. Si ya empezó y la parada no se ha marcado: pasa a `EXCUSED` y se recalcula el orden de las pendientes desde la posición actual.
+3. Si el recorrido no ha empezado: el estudiante se excluye al generarlo. Con **Tampoco regresa**, también se excluye de la vuelta de ese día.
+4. Si ya empezó y no se ha marcado: el estudiante pasa a `EXCUSED`. Si era el único de su parada, la parada se salta y se recalcula el orden de las pendientes desde la posición actual.
 5. Si el conductor iba **en camino a esa parada**, el aviso dice _"{nombre} no va hoy. Puedes seguir a la siguiente parada."_ y se habilita **Ir a la siguiente** desde donde está, sin pasar por la dirección.
 6. No hay hora de corte: se acepta hasta que la parada de la ida se marque (recogido o no salió).
-7. **Vuelta:** si no se marcó **Tampoco regresa**, el estudiante aparece en la vuelta con la señal _"No fue a la ida"_. El conductor o el acompañante puede marcar que **no va en la ruta de regreso**, antes de salir del colegio o durante la vuelta: la parada pasa a `EXCUSED`, se recalcula el orden y el acudiente recibe el aviso (sección 13), por si es un error. Ese marcado no exige estar en la dirección.
-8. **"No regresa en la ruta"** (el acudiente, solo la vuelta): para cuando el estudiante sí fue a la ida pero no vuelve en la ruta. La app pregunta _"¿Confirmas que {nombre} no regresa hoy en la ruta?"_ y al conductor le llega _"{nombre} no regresa hoy en la ruta."_ Se acepta **hasta que la vuelta inicia**; después, el botón queda desactivado con _"La ruta ya salió del colegio. Comunícate con el conductor."_ y los botones para llamar (sección 6.6), porque el estudiante puede ir ya a bordo y saltar su parada sería peligroso.
+7. **Vuelta:** si no se marcó **Tampoco regresa**, el estudiante aparece en la lista de abordaje con la señal _"No fue a la ida"_. Si no sube, el conductor no lo toca y queda como **no subió** al armar la ruta (sección 6.2).
+8. **"No regresa en la ruta"** (el acudiente, solo la vuelta): para cuando el estudiante sí fue a la ida pero no vuelve en la ruta. La app pregunta _"¿Confirmas que {nombre} no regresa hoy en la ruta?"_ y al conductor le llega _"{nombre} no regresa hoy en la ruta."_ Se acepta **hasta que el conductor toca Armar ruta**; si ya lo había tocado como a bordo, el conductor recibe _"{nombre} está marcado a bordo, pero su acudiente avisó que no regresa. Revísalo."_ Con la ruta armada, el botón queda desactivado con _"La ruta ya salió del colegio. Comunícate con el conductor."_ y los botones para llamar (sección 6.6), porque el estudiante puede ir a bordo y saltar su parada sería peligroso.
 9. **Deshacer:** el acudiente puede quitar un aviso hasta que inicie ese recorrido. Después debe comunicarse con el conductor: volver a meter una parada en pleno recorrido no se hace desde la app de acudientes.
 
-### 6.4 Onboarding del acudiente
+### 6.4 Crear la ruta e inscribir a los estudiantes
 
-Invitación (enlace o código) → registro → **autorización de tratamiento de datos** (versionada, con fecha) → vinculación con su estudiante → permiso de notificaciones.
+**Crear la ruta (admin).** La ruta se crea **sin direcciones de estudiantes**: llegan con las inscripciones.
+
+1. Datos: nombre, colegio (dirección; el admin confirma su pin en el mapa o toca **Estoy en el colegio**), jornada, días de servicio, vehículo (con su cupo), conductor, acompañante (opcional), punto de salida de la ida (opcional) y horas aproximadas de salida (informativas).
+2. Una ruta sirve para la ida y para la vuelta; cada inscripción dice en qué sentido va el estudiante.
+3. La ruta queda con un **enlace y un código** (por ejemplo, `K7P2QX`) para compartir en el grupo de WhatsApp de los papás. Si se filtra, el admin genera otro: el enlace solo permite pedir una inscripción, no ver nada.
+
+**Inscribir (acudiente).**
+
+1. Abre el enlace o pone el código en la app de acudientes → crea su cuenta con **correo y contraseña** → **autorización de tratamiento de datos** (versionada, con fecha) → permiso de notificaciones.
+2. Datos del estudiante: nombres y apellidos (lo mínimo necesario).
+3. **Dirección exacta**, sin pin, en campos separados para que se geocodifique bien:
+   - Municipio (uno de los 10 del Valle de Aburrá) y barrio.
+   - Vía: tipo (calle, carrera, diagonal, transversal, circular, avenida) y número con letra, `#` número con letra, `-` placa. Ejemplo: _Carrera 43A # 1-50_.
+   - Complemento: unidad, torre, apartamento o casa.
+   - Indicaciones para el conductor: _"portería principal"_, _"casa de reja verde"_.
+4. **Recorridos y días:** ida y vuelta por separado, cada uno con su dirección y sus días. Por ejemplo: ida de lunes a viernes desde la casa de la mamá; vuelta de lunes a miércoles a la casa de la mamá y jueves y viernes a la del papá. Una dirección que queda en otra ruta se inscribe con el enlace de esa ruta.
+5. Envía → la inscripción queda **pendiente**, y así lo dice la tarjeta de su hijo.
+6. Para que el otro acudiente también reciba los avisos, lo invita desde la tarjeta (**Agregar acudiente**); así no se duplica el estudiante.
+
+**Aprobar (admin).**
+
+1. Le llega _"Nueva inscripción: {nombre} en la ruta {ruta}"_.
+2. Ve la dirección, las indicaciones y el **pin que propone la geocodificación**, y lo confirma o lo mueve en el mapa. Si no conoce el lugar, aprueba con el **pin por confirmar**: en la primera visita, al llegar, la app le ofrece **El pin es aquí** y toma la posición del GPS.
+3. La app revisa el **cupo** del vehículo por día y sentido; un día sin cupo no se puede aprobar.
+4. Aprueba → el estudiante entra desde el siguiente recorrido y su acudiente recibe _"{nombre} quedó inscrito en la ruta {ruta} 🎉"_. Rechaza → con un motivo, que le llega al acudiente.
+
+**Cambios.**
+
+- Cambiar la dirección o los días crea una inscripción pendiente; la anterior sigue vigente hasta que se apruebe.
+- **Un día a otra dirección** (_"hoy va donde la abuela"_): el acudiente elige otra de sus direcciones ya aprobadas en esa ruta, para la ida o la vuelta de una fecha, antes de que inicie ese recorrido. Una dirección nueva necesita aprobación.
+- **Retirar:** el acudiente o el admin terminan la inscripción desde una fecha.
+- **Corregir el pin:** al marcar con el motivo _el pin está mal ubicado_, el conductor puede tocar **El pin es aquí**; el cambio queda registrado y aplica desde el siguiente recorrido.
 
 ### 6.5 Lo que ve el acudiente durante el recorrido
 
-- **Hasta cuándo:** desde que sale la ruta hasta que dejan a su hijo: en la ida, al llegar al colegio; en la vuelta, al entregarlo en la casa. En ese momento se cierra su sesión en vivo y deja de ver el vehículo. Si su hijo no va (`EXCUSED`) o no salió (`NO_SHOW`), se cierra en ese momento. Con varios hijos en el mismo recorrido, se cierra al dejar al último.
+- **Hasta cuándo:** desde que sale la ruta hasta que dejan a su hijo: en la ida, al llegar al colegio; en la vuelta, al entregarlo en la casa. En ese momento se cierra su sesión en vivo y deja de ver el vehículo. Si su hijo no va (`EXCUSED`), no salió (`NO_SHOW`) o no subió a la vuelta (`NOT_BOARDED`), se cierra en ese momento. Con varios hijos en el mismo recorrido, se cierra al dejar al último.
 - El vehículo en vivo y **su** parada en el mapa; ninguna otra parada.
 - El progreso: _"Va en la parada 3 de 12 · la tuya es la 7"_, y la hora estimada de llegada a su parada.
 - Nada sobre las demás paradas: ni nombres, ni direcciones, ni si alguien fue recogido o entregado.
@@ -193,12 +235,17 @@ En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy,
 
 - Los botones abren el marcador del celular con el número del conductor o del acompañante asignados al recorrido de ese día (o los de la ruta, si aún no hay recorrido). Si la ruta no tiene acompañante, solo aparece el del conductor.
 - **Con el recorrido en curso y el vehículo en movimiento**, el botón del conductor pregunta primero: _"Luis está manejando. Si es urgente, llama a Ana, la acompañante."_, con **Llamar a Ana** y **Llamar igual**. Sin acompañante: _"Luis está manejando y puede que no conteste. ¿Llamar igual?"_
-- Las notificaciones que piden comunicarse con el conductor (no salió, no va en el regreso) abren esta tarjeta.
+- Las notificaciones que piden comunicarse con el conductor (no salió, no subió a la ruta de regreso, nadie lo recibió) abren esta tarjeta.
+
+**Inscripción:**
+
+- Mientras la inscripción está pendiente, la tarjeta lo dice y no muestra recorridos.
+- El menú de la tarjeta tiene **Direcciones y días** (ver, cambiar o retirar), **Un día a otra dirección** y **Agregar acudiente**.
 
 **Ausencias:**
 
 - **Hoy no va** abre la confirmación de la ida con la casilla **Tampoco regresa**; **No regresa en la ruta**, la de la vuelta (sección 6.3).
-- Un botón que ya no aplica (la parada ya se marcó o la vuelta ya salió del colegio) queda desactivado y dice por qué.
+- Un botón que ya no aplica (la parada ya se marcó o la vuelta ya se armó) queda desactivado y dice por qué.
 - Un aviso hecho se muestra en su fila (_"Avisaste que no va · Deshacer"_), con **Deshacer** mientras ese recorrido no haya iniciado.
 - **Avisar para otro día** (citas médicas, viajes): se elige la fecha y las mismas dos opciones.
 
@@ -212,6 +259,7 @@ En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy,
 - Los acudientes ven el nombre y el teléfono del conductor y del acompañante **solo** de las rutas de sus hijos. El conductor y el acompañante lo autorizan al aceptar su invitación (`Membership.phoneSharingAcceptedAt`); sin esa autorización no se pueden asignar a una ruta.
 - Un acudiente **solo** recibe: posición del vehículo, su parada, la hora estimada de su parada y el progreso del recorrido (número de la parada actual, total de paradas y número de la suya). Nunca la lista de paradas, ni direcciones, nombres o estados (recogido, entregado) de otros estudiantes.
 - A Waze o Google Maps solo salen las coordenadas de la parada siguiente, desde el celular del conductor; nunca nombres.
+- Las direcciones de los estudiantes solo las ven su acudiente y el admin, el conductor y el acompañante de su ruta. El enlace o el código de una ruta solo permiten pedir una inscripción; nada queda visible sin la aprobación del admin.
 - La ubicación en vivo solo existe mientras el `Trip` está `IN_PROGRESS`, y cada acudiente la ve solo hasta que dejan a su hijo (sección 6.5). Después, el servidor lo saca de la sala y no lo deja volver a unirse.
 - La autorización se valida en el servidor: al unirse a la sala WebSocket y en cada endpoint.
 - Registro de accesos a la ubicación en vivo (`LocationAccessLog`).
@@ -285,21 +333,21 @@ flowchart LR
 
 ### 8.2 Módulos de la API (NestJS)
 
-| Módulo               | Responsabilidad                                                            |
-| -------------------- | -------------------------------------------------------------------------- |
-| `auth`               | Registro, login, JWT, refresh, invitaciones                                |
-| `organizations`      | Organizaciones y membresías con rol                                        |
-| `fleet`              | Vehículos                                                                  |
-| `routes`             | Rutas, estudiantes, paradas, acudientes vinculados                         |
-| `geocoding`          | Geocodificación de direcciones (proveedor detrás de una interfaz)          |
-| `optimization`       | Cliente de VROOM/OSRM; heurística de respaldo desde `packages/domain`      |
-| `trips`              | Generación diaria de recorridos, inicio/fin, máquina de estados de paradas |
-| `tracking`           | Ingesta de puntos GPS, cálculo de hora estimada, gateway WebSocket         |
-| `absences`           | "Hoy no va" y recálculo                                                    |
-| `notifications`      | Catálogo de mensajes y envío por Expo Push                                 |
-| `consents`           | Autorizaciones de tratamiento de datos                                     |
-| `retention`          | Job programado de borrado de datos                                         |
-| `health` / `metrics` | Health checks y métricas                                                   |
+| Módulo               | Responsabilidad                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `auth`               | Registro, login, JWT, refresh, invitaciones                                                                  |
+| `organizations`      | Organizaciones y membresías con rol                                                                          |
+| `fleet`              | Vehículos                                                                                                    |
+| `routes`             | Rutas con su enlace y código, estudiantes, direcciones, inscripciones y su aprobación, acudientes vinculados |
+| `geocoding`          | Geocodificación de direcciones (proveedor detrás de una interfaz)                                            |
+| `optimization`       | Cliente de VROOM/OSRM; heurística de respaldo desde `packages/domain`                                        |
+| `trips`              | Generación diaria de recorridos, lista de abordaje, inicio/fin, máquinas de estados de paradas y estudiantes |
+| `tracking`           | Ingesta de puntos GPS, cálculo de hora estimada, gateway WebSocket                                           |
+| `absences`           | "Hoy no va" y recálculo                                                                                      |
+| `notifications`      | Catálogo de mensajes y envío por Expo Push                                                                   |
+| `consents`           | Autorizaciones de tratamiento de datos                                                                       |
+| `retention`          | Job programado de borrado de datos                                                                           |
+| `health` / `metrics` | Health checks y métricas                                                                                     |
 
 ---
 
@@ -338,26 +386,29 @@ flowchart LR
 > Columnas geográficas: `geography(Point, 4326)`, declaradas en Prisma como `Unsupported(...)`.
 > Toda tabla tiene `id` (UUID), `createdAt`, `updatedAt`. Las acciones de usuario guardan `createdById`.
 
-| Entidad             | Campos clave                                                                                                                                                             | Notas                                                                                                                                              |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Organization`      | name, nit (opcional)                                                                                                                                                     | Empresa o conductor independiente                                                                                                                  |
-| `User`              | email, passwordHash, fullName, phone                                                                                                                                     |                                                                                                                                                    |
-| `Membership`        | userId, organizationId, role (`ADMIN`/`DRIVER`/`MONITOR`/`GUARDIAN`), phoneSharingAcceptedAt                                                                             | Roles por organización; `phoneSharingAcceptedAt` para conductores y acompañantes                                                                   |
-| `Vehicle`           | organizationId, plate, capacity                                                                                                                                          |                                                                                                                                                    |
-| `School`            | organizationId, name, addressText, location                                                                                                                              |                                                                                                                                                    |
-| `Route`             | organizationId, schoolId, vehicleId, name, shift (`AM`/`PM`), direction (`TO_SCHOOL`/`TO_HOME`), schoolTime, defaultDriverId, defaultMonitorId, startLocation (opcional) | Plantilla recurrente; `schoolTime` es informativa                                                                                                  |
-| `Student`           | organizationId, firstName, lastName                                                                                                                                      | Mínimo de datos necesarios                                                                                                                         |
-| `StudentGuardian`   | studentId, userId (acudiente), relationship                                                                                                                              |                                                                                                                                                    |
-| `Stop`              | routeId, studentId, addressText, location, confirmedAt, serviceSeconds                                                                                                   | `location` confirmada por el usuario                                                                                                               |
-| `RouteOptimization` | routeId, orderedStopIds, totalDurationSec, totalDistanceM, computedAt, engine (`VROOM`/`HEURISTIC`)                                                                      | Historial de cálculos                                                                                                                              |
-| `Trip`              | routeId, date, status (`SCHEDULED`/`IN_PROGRESS`/`COMPLETED`/`CANCELLED`), trackingUserId, startedAt, endedAt                                                            | Una ejecución de la ruta                                                                                                                           |
-| `TripStop`          | tripId, stopId, sequence, status, etaAt, enRouteAt, arrivedAt, completedAt, completedById, completedLocation, completedAccuracyM, overrideReason                         | Estado por parada en el recorrido; `overrideReason` cuando se marca sin confirmación del GPS                                                       |
-| `LocationPing`      | tripId, location, speed, heading, accuracy, recordedAt, receivedAt                                                                                                       | Se borra por retención; considerar partición por fecha                                                                                             |
-| `Absence`           | studentId, date, shift, direction (`TO_SCHOOL`/`TO_HOME`), createdById                                                                                                   | "Hoy no va". Con **Tampoco regresa** se crean las dos direcciones; solo la vuelta la crean el acudiente (**No regresa en la ruta**) o el conductor |
-| `Consent`           | guardianUserId, studentId, textVersion, acceptedAt, revokedAt                                                                                                            | Autorización Ley 1581                                                                                                                              |
-| `PushToken`         | userId, token, platform, lastSeenAt                                                                                                                                      |                                                                                                                                                    |
-| `NotificationLog`   | userId, tripId, type, sentAt, status                                                                                                                                     |                                                                                                                                                    |
-| `LocationAccessLog` | userId, tripId, accessedAt                                                                                                                                               | Quién vio la ubicación en vivo                                                                                                                     |
+| Entidad             | Campos clave                                                                                                                                                                                             | Notas                                                                                                                          |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `Organization`      | name, nit (opcional)                                                                                                                                                                                     | Empresa o conductor independiente                                                                                              |
+| `User`              | email, passwordHash, fullName, phone                                                                                                                                                                     |                                                                                                                                |
+| `Membership`        | userId, organizationId, role (`ADMIN`/`DRIVER`/`MONITOR`/`GUARDIAN`), phoneSharingAcceptedAt                                                                                                             | Roles por organización; `phoneSharingAcceptedAt` para conductores y acompañantes                                               |
+| `Vehicle`           | organizationId, plate, capacity                                                                                                                                                                          |                                                                                                                                |
+| `School`            | organizationId, name, addressText, location                                                                                                                                                              |                                                                                                                                |
+| `Route`             | organizationId, schoolId, vehicleId, name, shift (`AM`/`PM`), weekdays, toSchoolTime, toHomeTime, defaultDriverId, defaultMonitorId, startLocation (opcional), inviteCode                                | Servicio recurrente de ida y vuelta; las horas son informativas                                                                |
+| `Student`           | organizationId, firstName, lastName                                                                                                                                                                      | Mínimo de datos necesarios                                                                                                     |
+| `StudentGuardian`   | studentId, userId (acudiente), relationship                                                                                                                                                              |                                                                                                                                |
+| `Address`           | organizationId, municipality, neighborhood, street (vía, número y placa), complement, instructions, location, pinStatus (`PROPOSED`/`CONFIRMED`), pinConfirmedById, pinConfirmedAt                       | La escribe el acudiente; el pin lo propone la geocodificación y lo confirma el admin (o el conductor en la primera visita)     |
+| `Enrollment`        | studentId, routeId, direction (`TO_SCHOOL`/`TO_HOME`), addressId, weekdays, status (`PENDING`/`APPROVED`/`REJECTED`/`ENDED`), startsOn, endsOn, requestedById, reviewedById, reviewedAt, rejectionReason | Inscripción: qué ruta, qué sentido, a qué dirección y qué días                                                                 |
+| `AddressOverride`   | studentId, routeId, date, direction, addressId, createdById                                                                                                                                              | Un día a otra dirección                                                                                                        |
+| `Trip`              | routeId, date, direction (`TO_SCHOOL`/`TO_HOME`), status (`SCHEDULED`/`IN_PROGRESS`/`COMPLETED`/`CANCELLED`), trackingUserId, startedAt, endedAt                                                         | Una ejecución de la ruta en una fecha y un sentido                                                                             |
+| `TripStop`          | tripId, location, sequence, status, etaAt, enRouteAt, arrivedAt, completedAt, completedLocation, completedAccuracyM, overrideReason                                                                      | Una parada del recorrido: agrupa a los estudiantes con el mismo pin; `overrideReason` cuando se marca sin confirmación del GPS |
+| `TripStudent`       | tripId, tripStopId, studentId, addressId, status, markedById, markedAt                                                                                                                                   | Estado de cada estudiante en el recorrido; en la vuelta, `tripStopId` se asigna al armar la ruta                               |
+| `TripOptimization`  | tripId, orderedTripStopIds, totalDurationSec, totalDistanceM, computedAt, engine (`VROOM`/`HEURISTIC`)                                                                                                   | Historial de cálculos de cada recorrido, recálculos incluidos                                                                  |
+| `LocationPing`      | tripId, location, speed, heading, accuracy, recordedAt, receivedAt                                                                                                                                       | Se borra por retención; considerar partición por fecha                                                                         |
+| `Absence`           | studentId, date, direction (`TO_SCHOOL`/`TO_HOME`), createdById                                                                                                                                          | "Hoy no va". Con **Tampoco regresa** se crean los dos sentidos; **No regresa en la ruta** crea solo la vuelta                  |
+| `Consent`           | guardianUserId, studentId, textVersion, acceptedAt, revokedAt                                                                                                                                            | Autorización Ley 1581                                                                                                          |
+| `PushToken`         | userId, token, platform, lastSeenAt                                                                                                                                                                      |                                                                                                                                |
+| `NotificationLog`   | userId, tripId, type, sentAt, status                                                                                                                                                                     |                                                                                                                                |
+| `LocationAccessLog` | userId, tripId, accessedAt                                                                                                                                                                               | Quién vio la ubicación en vivo                                                                                                 |
 
 ### 10.1 Máquinas de estado (en `packages/domain`)
 
@@ -366,15 +417,25 @@ flowchart LR
 **TripStop:**
 
 ```
-PENDING → EN_ROUTE → APPROACHING → ARRIVED → PICKED_UP    (ida)
-                                           → DROPPED_OFF  (vuelta)
-                                           → NO_SHOW      (el niño no salió / nadie recibió)
-PENDING, EN_ROUTE, APPROACHING o ARRIVED → EXCUSED  ("hoy no va")
+PENDING → EN_ROUTE → APPROACHING → ARRIVED → DONE
+PENDING, EN_ROUTE, APPROACHING o ARRIVED → SKIPPED   (todos sus estudiantes quedaron EXCUSED)
+ARRIVED → PENDING                                    (vuelta: nadie recibió; la parada pasa al final)
 ```
 
-- `EN_ROUTE`: el conductor tocó **Ir a la parada**. Solo una parada del recorrido puede estar entre `EN_ROUTE` y `ARRIVED`, y solo se puede ir a la siguiente cuando la actual quedó en `PICKED_UP`, `DROPPED_OFF`, `NO_SHOW` o `EXCUSED`.
+- `EN_ROUTE`: el conductor tocó **Ir a la parada**. Solo una parada del recorrido puede estar entre `EN_ROUTE` y `ARRIVED`, y solo se puede ir a la siguiente cuando la actual quedó en `DONE` o `SKIPPED`.
 - `APPROACHING` y `ARRIVED` los detecta el servidor; en un tramo corto se puede pasar de `EN_ROUTE` a `ARRIVED` directamente.
-- `PICKED_UP`, `DROPPED_OFF` y `NO_SHOW` se aceptan desde `EN_ROUTE`, `APPROACHING` o `ARRIVED` si la posición que trae el evento está en la dirección (sección 12.3): sin señal, el servidor puede no haber detectado aún la llegada.
+- `DONE`: todos los estudiantes de la parada quedaron marcados.
+
+**TripStudent:**
+
+```
+Ida:     PENDING → PICKED_UP | NO_SHOW (no salió) | EXCUSED (hoy no va)
+Vuelta:  PENDING → BOARDED → DROPPED_OFF | NOT_RECEIVED (nadie lo recibió) → DROPPED_OFF
+         PENDING → NOT_BOARDED (no se tocó al armar la ruta) | EXCUSED (no regresa)
+```
+
+- `PICKED_UP`, `NO_SHOW`, `DROPPED_OFF` y `NOT_RECEIVED` se aceptan con la parada en `EN_ROUTE`, `APPROACHING` o `ARRIVED` si la posición que trae el evento está en la dirección (sección 12.3): sin señal, el servidor puede no haber detectado aún la llegada.
+- `BOARDED` y `NOT_BOARDED` solo existen antes de **Armar ruta**; después, la lista de abordaje queda cerrada.
 
 Las transiciones inválidas se rechazan con error de dominio. Cada transición registra quién y cuándo.
 
@@ -384,25 +445,31 @@ Las transiciones inválidas se rechazan con error de dominio. Cada transición r
 
 ### 11.1 REST
 
-| Método              | Ruta                                             | Rol                                                                                                                                                 |
-| ------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `POST`              | `/auth/register`, `/auth/login`, `/auth/refresh` | Público                                                                                                                                             |
-| `POST`              | `/invitations/:code/accept`                      | Autenticado                                                                                                                                         |
-| `POST/GET/PATCH`    | `/organizations/:orgId/vehicles`                 | ADMIN                                                                                                                                               |
-| `POST/GET/PATCH`    | `/organizations/:orgId/routes`                   | ADMIN (lectura: DRIVER, MONITOR)                                                                                                                    |
-| `POST/PATCH/DELETE` | `/routes/:routeId/stops`                         | ADMIN                                                                                                                                               |
-| `POST`              | `/geocoding/search`                              | ADMIN                                                                                                                                               |
-| `POST`              | `/routes/:routeId/optimize`                      | ADMIN, DRIVER                                                                                                                                       |
-| `GET`               | `/me/trips/today`                                | DRIVER, MONITOR, GUARDIAN (cada uno ve lo suyo; el acudiente recibe además el nombre y el teléfono del conductor y del acompañante)                 |
-| `POST`              | `/trips/:tripId/start`, `/trips/:tripId/finish`  | DRIVER                                                                                                                                              |
-| `POST`              | `/trips/:tripId/locations` (lote)                | Usuario que hace el rastreo                                                                                                                         |
-| `POST`              | `/trips/:tripId/stops/:tripStopId/events`        | MONITOR, DRIVER                                                                                                                                     |
-| `POST/DELETE`       | `/students/:studentId/absences`                  | GUARDIAN del estudiante (ida con `alsoReturn`, o solo la vuelta antes de que inicie), ADMIN; DRIVER y MONITOR solo la vuelta del recorrido en curso |
-| `GET`               | `/guardian/trips/:tripId/live`                   | GUARDIAN del estudiante en ese recorrido                                                                                                            |
-| `POST`              | `/consents`                                      | GUARDIAN                                                                                                                                            |
-| `POST`              | `/me/push-tokens`                                | Autenticado                                                                                                                                         |
+| Método           | Ruta                                                  | Rol                                                                                                                                 |
+| ---------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `POST`           | `/auth/register`, `/auth/login`, `/auth/refresh`      | Público                                                                                                                             |
+| `POST`           | `/invitations/:code/accept`                           | Autenticado                                                                                                                         |
+| `POST/GET/PATCH` | `/organizations/:orgId/vehicles`                      | ADMIN                                                                                                                               |
+| `POST/GET/PATCH` | `/organizations/:orgId/routes`                        | ADMIN (lectura: DRIVER, MONITOR)                                                                                                    |
+| `POST`           | `/routes/:routeId/invite-code`                        | ADMIN (genera un código nuevo)                                                                                                      |
+| `GET`            | `/routes/by-code/:code`                               | Autenticado: solo colegio, jornada y nombre de la ruta, para inscribirse                                                            |
+| `POST/GET/PATCH` | `/students/:studentId/addresses`                      | GUARDIAN del estudiante (texto de la dirección), ADMIN (pin)                                                                        |
+| `POST/GET/PATCH` | `/enrollments`                                        | GUARDIAN (las de sus hijos), ADMIN (las de su organización)                                                                         |
+| `POST`           | `/enrollments/:id/approve`, `/enrollments/:id/reject` | ADMIN; al aprobar, con el pin confirmado o por confirmar                                                                            |
+| `POST/DELETE`    | `/students/:studentId/address-overrides`              | GUARDIAN del estudiante (un día a otra dirección)                                                                                   |
+| `POST`           | `/students/:studentId/guardian-invitations`           | GUARDIAN del estudiante (Agregar acudiente)                                                                                         |
+| `POST`           | `/geocoding/search`                                   | ADMIN                                                                                                                               |
+| `POST`           | `/trips/:tripId/boarding`                             | DRIVER, MONITOR: lista de abordaje y **Armar ruta** (vuelta)                                                                        |
+| `GET`            | `/me/trips/today`                                     | DRIVER, MONITOR, GUARDIAN (cada uno ve lo suyo; el acudiente recibe además el nombre y el teléfono del conductor y del acompañante) |
+| `POST`           | `/trips/:tripId/start`, `/trips/:tripId/finish`       | DRIVER                                                                                                                              |
+| `POST`           | `/trips/:tripId/locations` (lote)                     | Usuario que hace el rastreo                                                                                                         |
+| `POST`           | `/trips/:tripId/stops/:tripStopId/events`             | MONITOR, DRIVER                                                                                                                     |
+| `POST/DELETE`    | `/students/:studentId/absences`                       | GUARDIAN del estudiante (ida con `alsoReturn`, o solo la vuelta hasta que se arme), ADMIN                                           |
+| `GET`            | `/guardian/trips/:tripId/live`                        | GUARDIAN del estudiante en ese recorrido                                                                                            |
+| `POST`           | `/consents`                                           | GUARDIAN                                                                                                                            |
+| `POST`           | `/me/push-tokens`                                     | Autenticado                                                                                                                         |
 
-**Eventos de parada** (`/trips/:tripId/stops/:tripStopId/events`): `EN_ROUTE` (Ir a la parada), `PICKED_UP`, `DROPPED_OFF` y `NO_SHOW`. Cada uno lleva la posición, la precisión del GPS y la hora del celular, y `overrideReason` si se marca sin confirmación del GPS. `APPROACHING` y `ARRIVED` los detecta el servidor.
+**Eventos de parada** (`/trips/:tripId/stops/:tripStopId/events`): `EN_ROUTE` (Ir a la parada, por parada) y `PICKED_UP`, `NO_SHOW`, `DROPPED_OFF` y `NOT_RECEIVED` (por estudiante, con `studentId`). Cada uno lleva la posición, la precisión del GPS y la hora del celular, `overrideReason` si se marca sin confirmación del GPS, y `pinHere` si el conductor tocó **El pin es aquí**. `APPROACHING` y `ARRIVED` los detecta el servidor.
 
 ### 11.2 WebSocket (`/live`)
 
@@ -424,11 +491,12 @@ Al conductor y al admin se les emite la vista completa (todas las paradas) en un
 ### 12.1 Optimización del orden
 
 - **Problema:** viajante para **un vehículo** (TSP), resuelto con VROOM sobre la matriz de tiempos de OSRM. **Objetivo:** la ruta más rápida (menor duración total) pasando por todas las paradas. La hora de entrada al colegio no es una restricción.
-- **Ida:** inicio en `Route.startLocation` (o la primera parada), una tarea por parada con tiempo de servicio y **fin en el colegio**.
-- **Vuelta:** inicio en el colegio, una tarea por parada, **ruta abierta** (sin punto final).
+- **Paradas:** al generar cada recorrido, los estudiantes cuyas direcciones tienen el mismo pin (a menos de `SHARED_STOP_RADIUS_M`, por defecto 30 m) quedan en **una sola parada**: hermanos, o vecinos de la misma unidad que salen por la misma portería. Cada parada tiene un tiempo de servicio (`STOP_SERVICE_SECONDS`, por defecto 60).
+- **Ida:** inicio en `Route.startLocation` (o la primera parada), una tarea por parada y **fin en el colegio**. Se calcula al generar el recorrido.
+- **Vuelta:** inicio en el colegio, una tarea por parada de los estudiantes que abordaron, **ruta abierta** (sin punto final). Se calcula al tocar **Armar ruta**.
 - **Sin ventanas de tiempo:** con una ventana imposible, VROOM deja paradas sin asignar en vez de avisar ([ADR 0004](adr/0004-osrm-vroom.md)). Un resultado con paradas sin asignar es un error, nunca una ruta válida.
 - **Respaldo:** heurística en `packages/domain` (vecino más cercano + 2-opt) para cuando VROOM no esté disponible. Sus tests comparan la calidad contra VROOM en casos de prueba.
-- **Recálculo:** al cambiar estudiantes de la ruta o con un "hoy no va" durante un recorrido (solo sobre las paradas pendientes, desde la posición actual). Durante el recorrido, el recálculo solo cambia cuáles son las siguientes; la parada en `EN_ROUTE` no se reordena, salvo que quede `EXCUSED`.
+- **Recálculo:** con un "hoy no va" o un "nadie lo recibió" durante un recorrido (solo sobre las paradas pendientes, desde la posición actual). Durante el recorrido, el recálculo solo cambia cuáles son las siguientes; la parada en `EN_ROUTE` no se reordena, salvo que quede `EXCUSED`.
 
 ### 12.2 Hora estimada (ETA)
 
@@ -452,35 +520,40 @@ Al conductor y al admin se les emite la vista completa (todas las paradas) en un
 
 Tono **cercano y cálido**, en español de Colombia. `{nombre}` es el nombre del estudiante.
 
-| Evento                                      | Mensaje                                                                                       |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Recorrido iniciado                          | La ruta de {nombre} ya salió 🚐                                                               |
-| En camino (ida)                             | La ruta va en camino por {nombre}. Llega en unos {minutos} min.                               |
-| En camino (vuelta)                          | {nombre} va en camino a casa. Llega en unos {minutos} min.                                    |
-| Va llegando                                 | La ruta está a unos 5 minutos. ¡Alisten el morral!                                            |
-| Llegó a la parada                           | La ruta llegó por {nombre}.                                                                   |
-| Recogido                                    | {nombre} ya va en la ruta ✅                                                                  |
-| Llegó al colegio                            | {nombre} llegó al colegio.                                                                    |
-| Va de vuelta                                | {nombre} va de vuelta a casa.                                                                 |
-| Entregado                                   | {nombre} llegó a casa 🏠                                                                      |
-| No salió                                    | La ruta pasó y {nombre} no salió. Comunícate con el conductor.                                |
-| No va en el regreso (lo marca el conductor) | El conductor marcó que {nombre} no va en la ruta de regreso. Si no es así, comunícate con él. |
+| Evento                | Mensaje                                                                                    |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| Recorrido iniciado    | La ruta de {nombre} ya salió 🚐                                                            |
+| En camino (ida)       | La ruta va en camino por {nombre}. Llega en unos {minutos} min.                            |
+| En camino (vuelta)    | {nombre} va en camino a casa. Llega en unos {minutos} min.                                 |
+| Va llegando           | La ruta está a unos 5 minutos. ¡Alisten el morral!                                         |
+| Llegó a la parada     | La ruta llegó por {nombre}.                                                                |
+| Recogido              | {nombre} ya va en la ruta ✅                                                               |
+| Llegó al colegio      | {nombre} llegó al colegio.                                                                 |
+| Va de vuelta          | {nombre} va de vuelta a casa.                                                              |
+| Entregado             | {nombre} llegó a casa 🏠                                                                   |
+| No salió              | La ruta pasó y {nombre} no salió. Comunícate con el conductor.                             |
+| No subió a la vuelta  | {nombre} no subió a la ruta de regreso. Si no es así, comunícate con el conductor.         |
+| Nadie lo recibió      | Nadie recibió a {nombre} en la casa. Sigue en la ruta con el conductor; comunícate con él. |
+| Inscripción aprobada  | {nombre} quedó inscrito en la ruta {ruta} 🎉                                               |
+| Inscripción rechazada | La inscripción de {nombre} no fue aprobada: {motivo}.                                      |
 
 Al conductor y al acompañante:
 
-| Evento                         | Mensaje                                                  |
-| ------------------------------ | -------------------------------------------------------- |
-| Hoy no va                      | {nombre} no va hoy.                                      |
-| Hoy no va ni regresa           | {nombre} no va hoy y tampoco regresa.                    |
-| No regresa                     | {nombre} no regresa hoy en la ruta.                      |
-| Hoy no va, en camino a su casa | {nombre} no va hoy. Puedes seguir a la siguiente parada. |
-| Llegó a la parada              | Llegaste donde {nombre}. Toca para marcar.               |
-| GPS apagado                    | Activa el GPS para continuar el recorrido.               |
+| Evento                         | Mensaje                                                                          |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| Hoy no va                      | {nombre} no va hoy.                                                              |
+| Hoy no va ni regresa           | {nombre} no va hoy y tampoco regresa.                                            |
+| No regresa                     | {nombre} no regresa hoy en la ruta.                                              |
+| No regresa, pero va a bordo    | {nombre} está marcado a bordo, pero su acudiente avisó que no regresa. Revísalo. |
+| Hoy no va, en camino a su casa | {nombre} no va hoy. Puedes seguir a la siguiente parada.                         |
+| Llegó a la parada              | Llegaste donde {nombre}. Toca para marcar.                                       |
+| GPS apagado                    | Activa el GPS para continuar el recorrido.                                       |
 
 Al admin:
 
 | Evento                   | Mensaje                                                 |
 | ------------------------ | ------------------------------------------------------- |
+| Nueva inscripción        | Nueva inscripción: {nombre} en la ruta {ruta}.          |
 | GPS apagado en recorrido | El GPS de la ruta {ruta} está apagado desde las {hora}. |
 | Sin ubicación            | La ruta {ruta} no envía su ubicación desde las {hora}.  |
 
@@ -546,15 +619,17 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 ### Fase 1 — Datos, autenticación y permisos
 
 - Esquema Prisma inicial (sección 10) con migraciones.
-- Registro, login, JWT con refresh rotativo e invitaciones.
+- Registro y login con correo y contraseña, JWT con refresh rotativo e invitaciones.
 - Organizaciones, membresías y permisos CASL en `packages/domain`.
-- CRUD de vehículos, colegios, rutas y estudiantes; vinculación de acudientes; autorización de datos.
+- Vehículos, colegios y rutas con enlace y código (sección 6.4).
+- Inscripción del acudiente (estudiante, dirección exacta, días de ida y de vuelta, autorización de datos), **Agregar acudiente** y aprobación del admin con revisión de cupo.
 
 **Aceptación:** tests de integración demuestran que un acudiente no puede leer datos de estudiantes que no son suyos.
 
 ### Fase 2 — Paradas y optimización
 
-- Geocodificación detrás de una interfaz y confirmación del pin en el mapa (app del conductor).
+- Geocodificación detrás de una interfaz: propone el pin al aprobar cada inscripción; el admin lo confirma o lo mueve en el mapa, o lo deja por confirmar en la primera visita.
+- Paradas compartidas: estudiantes con el mismo pin en una sola parada.
 - OSRM con el Valle de Aburrá (recorte del extracto de Colombia de OpenStreetMap) y VROOM en Docker. Ya montados en la Etapa 1 del plan (`infra/routing`); en esta fase la API los empieza a usar.
 - Endpoint de optimización para ida y vuelta.
 - Heurística de respaldo en `packages/domain` con tests.
@@ -564,7 +639,8 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 
 ### Fase 3 — Recorrido en vivo
 
-- Generación diaria de recorridos.
+- Generación diaria de recorridos a partir de las inscripciones del día.
+- Lista de abordaje y **Armar ruta** en la vuelta; no se finaliza con estudiantes a bordo.
 - Iniciar y finalizar recorrido; rastreo en segundo plano con servicio en primer plano, cola local SQLite e ingesta por lotes.
 - Navegación parada por parada: elegir Waze o Google Maps, abrirlos con un enlace por parada e **Ir a la siguiente** ([ADR 0010](adr/0010-navegacion-waze-google-maps.md)).
 - Gateway WebSocket con salas autorizadas y Redis adapter.
@@ -587,7 +663,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 ### Fase 5 — "Hoy no va" e historial
 
 - Ausencias desde la tarjeta de cada hijo (sección 6.6): **Hoy no va** con la casilla **Tampoco regresa**, **No regresa en la ruta** hasta que inicia la vuelta, **Deshacer** y **Avisar para otro día**; aviso inmediato al conductor; recálculo durante el recorrido e **Ir a la siguiente** desde la posición actual.
-- "No va en la ruta de regreso" marcado por el conductor o el acompañante, con aviso al acudiente.
+- **Un día a otra dirección**, retiro de inscripciones y **El pin es aquí** para corregir pines.
 - Historial de recorridos (horas de paso por parada).
 - Job de retención de datos y registro de accesos a la ubicación.
 
@@ -622,12 +698,11 @@ Una ruta real (idealmente de una empresa legal de transporte especial), durante 
 
 ## 18. Decisiones abiertas
 
-1. Método de autenticación de acudientes: correo y contraseña (MVP) o código por SMS/WhatsApp (más fácil para papás, pero con costo).
-2. Proveedor de geocodificación y de mapas (ADR 0008), con precios verificados.
-3. Días de retención de puntos GPS y de eventos de parada (validar con la Ley 1581).
-4. Obligaciones del Decreto 1048 de 2026 que deben convertirse en funcionalidades.
-5. Identificadores definitivos de las apps en Google Play.
-6. Modelo de negocio, si el piloto funciona (cobro a la empresa de transporte por vehículo, por ejemplo).
+1. Proveedor de geocodificación y de mapas (ADR 0008), con precios verificados.
+2. Días de retención de puntos GPS y de eventos de parada (validar con la Ley 1581).
+3. Obligaciones del Decreto 1048 de 2026 que deben convertirse en funcionalidades.
+4. Identificadores definitivos de las apps en Google Play.
+5. Modelo de negocio, si el piloto funciona (cobro a la empresa de transporte por vehículo, por ejemplo).
 
 ---
 

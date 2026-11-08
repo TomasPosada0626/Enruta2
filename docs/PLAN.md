@@ -17,7 +17,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 
 ## Ajustes propuestos al spec (por decidir antes de la Fase 1)
 
-- **Paradas compartidas.** Hoy `Stop` es por estudiante. Hermanos o vecinos de la misma unidad residencial quedarían como paradas duplicadas en el mismo punto. Propuesta: `Stop` = dirección, con `StopStudent`; recogido, entregado y no salió se marcan por estudiante.
+- **Paradas compartidas** (resuelto): los estudiantes con el mismo pin quedan en una sola parada de cada recorrido; recogido, entregado y no salió se marcan por estudiante (`TripStop` y `TripStudent`, spec, secciones 10 y 12.1).
 - **Android 14+.** Además de la ubicación en segundo plano, Play Console pide declarar el tipo de servicio en primer plano (`location`). Agregarlo a la sección 14.
 - **`LocationPing` particionado por día** desde la primera migración, para borrar por retención con `DROP` de particiones en vez de `DELETE` masivos (ADR 0007).
 - **Prueba cerrada por app.** La app del conductor también necesita 12 testers; los acudientes del piloto solo cubren la suya.

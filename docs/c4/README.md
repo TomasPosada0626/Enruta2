@@ -20,10 +20,10 @@ flowchart TB
   nav["Waze / Google Maps<br/>navegación del conductor (ADR 0010)"]
   play["Google Play<br/>distribución de las apps"]
 
-  admin -->|"registra vehículos, rutas<br/>y estudiantes"| enruta2
+  admin -->|"crea rutas y aprueba<br/>inscripciones"| enruta2
   driver -->|"hace el recorrido y<br/>marca cada parada"| enruta2
   enruta2 -->|"posición, hora estimada<br/>y notificaciones"| guardian
-  guardian -->|"avisa «hoy no va»"| enruta2
+  guardian -->|"inscribe a su hijo y<br/>avisa «hoy no va»"| enruta2
 
   enruta2 -->|"calcula tiempos y rutas"| osm
   enruta2 -->|"envía notificaciones"| push
