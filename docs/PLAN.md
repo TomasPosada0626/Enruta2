@@ -49,7 +49,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 
 Tres prototipos desechables que validan lo que podría obligar a cambiar el diseño:
 
-- [ ] **Rastreo en segundo plano** en un celular real de gama media (Xiaomi o Samsung): 30 min con la pantalla apagada **y con Waze o Google Maps en primer plano** (así se usará: [ADR 0010](adr/0010-navegacion-waze-google-maps.md)), cola SQLite y envío por lotes. Requiere un _development build_ (la ubicación en segundo plano no funciona en Expo Go).
+- [ ] **Rastreo en segundo plano** en un celular real de gama media (Xiaomi o Samsung): 30 min con la pantalla apagada **y con Waze o Google Maps en primer plano** (así se usará: [ADR 0010](adr/0010-navegacion-waze-google-maps.md)), cola SQLite y envío por lotes. Probar también que la app detecta en segundo plano cuando se apaga la ubicación o se pierde la posición, y alerta al conductor (spec, sección 7.2.1). Requiere un _development build_ (la ubicación en segundo plano no funciona en Expo Go).
 - [x] **OSRM y VROOM** con el Valle de Aburrá recortado con osmium (el extracto completo de Colombia necesita más memoria de la que Docker tiene en Windows). Meta: 15 paradas en menos de 2 s. Resultado: máximo 119 ms, con los 10 municipios del valle cubiertos; el objetivo es la ruta más rápida, sin hora de entrada como restricción ([ADR 0004](adr/0004-osrm-vroom.md)).
 - [ ] **Geocodificación**: 20 direcciones reales tipo "Cra 43A # 1-50" contra 2 o 3 proveedores, para decidir el ADR 0008 con datos.
 
