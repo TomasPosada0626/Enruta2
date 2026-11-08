@@ -50,5 +50,5 @@ jobs:
             echo "::warning::Falta el secreto EXPO_TOKEN; no se publicó la actualización."
             exit 0
           fi
-          npx -y eas-cli@27.5.0 update --channel preview --platform android \
+          npx -y eas-cli@27.5.0 update --channel preview --environment preview --platform android \
             --message "$(printf '%s' "$MENSAJE" | head -n 1 | cut -c1-200)" --non-interactive

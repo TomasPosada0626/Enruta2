@@ -29,6 +29,8 @@ const resultado = spawnSync(
     'update',
     '--channel',
     'preview',
+    '--environment',
+    'preview',
     '--platform',
     'android',
     '--message',
