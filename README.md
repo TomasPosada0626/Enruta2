@@ -20,22 +20,24 @@ Plataforma móvil para **rutas escolares en Colombia**. El conductor recibe el o
 4. **Solo el celular:** no requiere instalar GPS en el vehículo.
 5. **Privacidad por diseño:** cada acudiente ve el vehículo, en qué parada va y cuál es la suya; nunca las direcciones ni los nombres de otras familias.
 
-## Las dos apps
+## Una sola app, dos modos
 
-| App                   | Carpeta         | Para quién                             |
-| --------------------- | --------------- | -------------------------------------- |
-| **Enruta2 Conductor** | `apps/driver`   | Conductor, acompañante y administrador |
-| **Enruta2**           | `apps/guardian` | Acudientes (papás, mamás, cuidadores)  |
+La app **Enruta2** (`apps/mobile`) pregunta al abrirse "¿Cómo usas Enruta2?" y lleva al inicio de sesión de cada modo:
 
-Son dos apps y no una con roles para que solo la del conductor pida ubicación en segundo plano, el permiso que más revisa Google Play ([ADR 0002](docs/adr/0002-dos-apps-separadas.md)).
+| Modo          | Para quién                             | Pestañas                                   |
+| ------------- | -------------------------------------- | ------------------------------------------ |
+| **Acudiente** | Acudientes (papás, mamás, cuidadores)  | En vivo, Hijos, Avisos, Cuenta             |
+| **Conductor** | Conductor, acompañante y administrador | Hoy, Recorrido, Inscripciones, Avisos, Más |
+
+Es una sola app para tener un APK, un canal de actualizaciones y una ficha en Google Play. El permiso de ubicación en segundo plano solo se pide en el modo conductor ([ADR 0011](docs/adr/0011-una-app-con-seleccion-de-rol.md)).
 
 ## Arquitectura
 
 ```mermaid
 flowchart LR
-  subgraph Moviles["Móviles (Android)"]
-    D["App Conductor<br/>Expo"]
-    G["App Acudientes<br/>Expo"]
+  subgraph Moviles["App Enruta2 · Expo (Android)"]
+    D["Modo conductor"]
+    G["Modo acudiente"]
   end
 
   subgraph Backend
@@ -64,17 +66,17 @@ Más detalle en los [diagramas C4](docs/c4/README.md) y en la [especificación](
 
 ## Stack
 
-| Capa         | Tecnología                                                                                                      |
-| ------------ | --------------------------------------------------------------------------------------------------------------- |
-| Apps móviles | React Native 0.88 con Expo SDK 58 (solo Android en el MVP)                                                      |
-| API          | NestJS 12 (ES modules), Swagger, Terminus, pino                                                                 |
-| Datos        | PostgreSQL 18 + PostGIS 3.6, Prisma (Fase 1)                                                                    |
-| Tiempo real  | Socket.IO con adapter de Redis (Fase 3)                                                                         |
-| Optimización | OSRM + VROOM sobre OpenStreetMap (Fase 2)                                                                       |
-| Dominio      | `packages/domain`: reglas de negocio puras compartidas por API y apps                                           |
-| Diseño       | `packages/ui`: tema, logo, íconos y componentes de las dos apps (Hanken Grotesk, expo-router, react-native-svg) |
-| Calidad      | TypeScript 6 estricto, ESLint, Prettier, Vitest, GitHub Actions                                                 |
-| Monorepo     | pnpm workspaces + Turborepo                                                                                     |
+| Capa         | Tecnología                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------ |
+| App móvil    | React Native 0.88 con Expo SDK 58 (solo Android en el MVP); APK con EAS Build y actualizaciones OTA con EAS Update |
+| API          | NestJS 12 (ES modules), Swagger, Terminus, pino                                                                    |
+| Datos        | PostgreSQL 18 + PostGIS 3.6, Prisma (Fase 1)                                                                       |
+| Tiempo real  | Socket.IO con adapter de Redis (Fase 3)                                                                            |
+| Optimización | OSRM + VROOM sobre OpenStreetMap (Fase 2)                                                                          |
+| Dominio      | `packages/domain`: reglas de negocio puras compartidas por API y app                                               |
+| Diseño       | `packages/ui`: tema, logo, íconos y componentes de la app (Hanken Grotesk, expo-router, react-native-svg)          |
+| Calidad      | TypeScript 6 estricto, ESLint, Prettier, Vitest, GitHub Actions                                                    |
+| Monorepo     | pnpm workspaces + Turborepo                                                                                        |
 
 Las versiones y sus restricciones están en el [ADR 0009](docs/adr/0009-versiones-base.md).
 
@@ -83,12 +85,11 @@ Las versiones y sus restricciones están en el [ADR 0009](docs/adr/0009-versione
 ```
 apps/
   api/          API NestJS
-  driver/       App Enruta2 Conductor (Expo)
-  guardian/     App Enruta2 para acudientes (Expo)
+  mobile/       App Enruta2 (Expo): modo acudiente y modo conductor
 packages/
   config/       Configuración compartida de TypeScript y ESLint
   domain/       Reglas de negocio: roles, recorridos, máquinas de estado
-  ui/           Diseño compartido de las apps: tema, logo, íconos y componentes
+  ui/           Diseño de la app: tema, logo, íconos y componentes
 infra/
   routing/      OSRM y VROOM: preparación del mapa del Valle de Aburrá y medición
 docs/
@@ -100,7 +101,7 @@ docs/
 
 ## Cómo correrlo
 
-**Requisitos:** Node.js 26, pnpm 9.15 y Docker. Para las apps, la app Expo Go en un celular Android o un emulador de Android Studio.
+**Requisitos:** Node.js 26, pnpm 9.15 y Docker. Para la app, Expo Go en un celular Android o un emulador de Android Studio.
 
 ```bash
 pnpm install
@@ -119,17 +120,27 @@ Con la API arriba:
 - `GET http://localhost:3000/health/ready`: PostgreSQL/PostGIS y Redis responden.
 - `http://localhost:3000/docs`: documentación OpenAPI (Swagger).
 
-Las apps se abren con Expo (escanea el código QR con Expo Go):
+La app se abre con Expo (escanea el código QR con Expo Go):
 
 ```bash
-pnpm driver     # Enruta2 Conductor, puerto 8081
-pnpm guardian   # Enruta2 acudientes, puerto 8082
+pnpm movil
 ```
 
-Por ahora las dos apps son un **prototipo navegable** con el diseño final y datos de ejemplo; todavía no se conectan a la API. El celular y el computador deben estar en la misma red Wi-Fi (si no, `pnpm driver --tunnel`). Qué probar:
+Por ahora la app es un **prototipo navegable** con el diseño final y datos de ejemplo; todavía no se conecta a la API. El celular y el computador deben estar en la misma red Wi-Fi (si no, `pnpm movil --tunnel`). Qué probar:
 
-- **Conductor:** Entrar → Iniciar recorrido → Abrir en Waze o Google Maps → «Simular llegada» → marcar a cada estudiante → Ir a la siguiente. La vuelta se arma desde «Ruta Norte · Regreso» con la lista de abordaje. El menú de prueba (tu inicial, arriba a la derecha) lleva a los avisos de «no va» y GPS apagado, y a la aprobación de inscripciones.
-- **Acudientes:** Entrar → inicio en vivo (la hora estimada baja sola) → Hoy no va / No regresa / llamar. «Tengo un enlace o código» abre la inscripción: dirección, confirmación arrastrando el mapa y días.
+- **Conductor** («Soy conductor o acompañante»): Entrar → Iniciar recorrido → Abrir en Waze o Google Maps → «Simular llegada» → marcar a cada estudiante → Ir a la siguiente. La vuelta se arma desde «Ruta Norte · Regreso» con la lista de abordaje. La pestaña Inscripciones aprueba las solicitudes, y la pestaña Más tiene atajos de prueba para los avisos de «no va» y de GPS apagado.
+- **Acudiente** («Soy acudiente»): Entrar → inicio en vivo (la hora estimada baja sola) → Hoy no va / No regresa / llamar. El selector de arriba cambia de hijo (Pablo y Emma), y la pestaña Hijos muestra la tarjeta de cada uno. «Tengo un enlace o código» (o Inscribir, en Hijos) abre la inscripción: estudiante, dirección, confirmación arrastrando el mapa y días.
+
+### Instalar el APK y actualizar por OTA
+
+La app se compila en la nube con [EAS](https://expo.dev) (proyecto `@pawfound/enruta2`):
+
+```bash
+pnpm apk   # compila el APK de prueba (perfil preview); la página del build tiene el QR para instalarlo
+pnpm ota   # publica los cambios de JavaScript en el canal preview; el APK los descarga al abrirse
+```
+
+Cada push a `main` que cambie la app publica la actualización sola ([`.github/workflows/ota.yml`](.github/workflows/ota.yml)) si el repositorio tiene el secreto `EXPO_TOKEN` (expo.dev → Account settings → Access tokens). Un cambio nativo (un paquete nuevo de Expo, permisos, íconos) no viaja por OTA: hay que subir `version` en `apps/mobile/app.json` y compilar un APK nuevo.
 
 ### Scripts
 
@@ -141,6 +152,9 @@ Por ahora las dos apps son un **prototipo navegable** con el diseño final y dat
 | `pnpm format`     | Formatea el código con Prettier                                  |
 | `pnpm infra:up`   | Levanta PostGIS y Redis y espera a que estén sanos               |
 | `pnpm infra:down` | Detiene la infraestructura local                                 |
+| `pnpm movil`      | Abre la app con Expo                                             |
+| `pnpm apk`        | Compila el APK de prueba en EAS                                  |
+| `pnpm ota`        | Publica una actualización OTA en el canal preview                |
 
 ## Avance
 

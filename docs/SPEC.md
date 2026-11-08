@@ -7,16 +7,16 @@
 
 ## 1. Resumen
 
-Enruta2 es una plataforma móvil para **rutas escolares en Colombia** con dos apps:
+Enruta2 es una plataforma móvil para **rutas escolares en Colombia**: una sola app (`apps/mobile`) que al abrirse pregunta "¿Cómo usas Enruta2?" y entra en uno de dos modos:
 
-| App                                   | Para quién                                        | Qué hace                                                                                                                                                                                 |
-| ------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Enruta2 Conductor** (`apps/driver`) | Conductor, acompañante y administrador de la ruta | Registrar estudiantes y direcciones, calcular el orden óptimo de recogida, hacer el recorrido parada por parada (navegando con Waze o Google Maps) compartiendo GPS y marcar cada parada |
-| **Enruta2** (`apps/guardian`)         | Acudientes (papás, mamás, cuidadores)             | Ver en vivo dónde va la ruta y en cuántos minutos llega, recibir notificaciones y avisar "hoy no va"                                                                                     |
+| Modo          | Para quién                                        | Qué hace                                                                                                                                                                                 |
+| ------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Conductor** | Conductor, acompañante y administrador de la ruta | Registrar estudiantes y direcciones, calcular el orden óptimo de recogida, hacer el recorrido parada por parada (navegando con Waze o Google Maps) compartiendo GPS y marcar cada parada |
+| **Acudiente** | Acudientes (papás, mamás, cuidadores)             | Ver en vivo dónde va la ruta y en cuántos minutos llega, recibir notificaciones y avisar "hoy no va"                                                                                     |
 
-Detrás de ambas hay una API en NestJS con PostgreSQL + PostGIS, WebSockets para el tiempo real y un motor de optimización (OSRM + VROOM).
+Detrás de los dos modos hay una API en NestJS con PostgreSQL + PostGIS, WebSockets para el tiempo real y un motor de optimización (OSRM + VROOM).
 
-**Por qué dos apps y no una con roles:** la ubicación en segundo plano exige una declaración especial ante Google Play. Separando las apps, solo la del conductor la pide, y la de los acudientes pasa la revisión de Google Play con mucha menos fricción.
+**Por qué una sola app:** un APK, un canal de actualizaciones y una ficha en Google Play, con una sola prueba cerrada. El permiso de ubicación solo se pide en el modo conductor ([ADR 0011](adr/0011-una-app-con-seleccion-de-rol.md), que reemplaza al ADR 0002).
 
 ---
 
@@ -173,7 +173,7 @@ La vuelta se arma en el colegio con la **lista de abordaje**:
 6. No hay hora de corte: se acepta hasta que la parada de la ida se marque (recogido o no salió).
 7. **Vuelta:** si no se marcó **Tampoco regresa**, el estudiante aparece en la lista de abordaje con la señal _"No fue a la ida"_. Si no sube, el conductor no lo toca y queda como **no subió** al armar la ruta (sección 6.2).
 8. **"No regresa en la ruta"** (el acudiente, solo la vuelta): para cuando el estudiante sí fue a la ida pero no vuelve en la ruta. La app pregunta _"¿Confirmas que {nombre} no regresa hoy en la ruta?"_ y al conductor le llega _"{nombre} no regresa hoy en la ruta."_ Se acepta **hasta que el conductor toca Armar ruta**; si ya lo había tocado como a bordo, el conductor recibe _"{nombre} está marcado a bordo, pero su acudiente avisó que no regresa. Revísalo."_ Con la ruta armada, el botón queda desactivado con _"La ruta ya salió del colegio. Comunícate con el conductor."_ y los botones para llamar (sección 6.6), porque el estudiante puede ir a bordo y saltar su parada sería peligroso.
-9. **Deshacer:** el acudiente puede quitar un aviso hasta que inicie ese recorrido. Después debe comunicarse con el conductor: volver a meter una parada en pleno recorrido no se hace desde la app de acudientes.
+9. **Deshacer:** el acudiente puede quitar un aviso hasta que inicie ese recorrido. Después debe comunicarse con el conductor: volver a meter una parada en pleno recorrido no se hace desde el modo acudiente.
 
 ### 6.4 Crear la ruta e inscribir a los estudiantes
 
@@ -185,7 +185,7 @@ La vuelta se arma en el colegio con la **lista de abordaje**:
 
 **Inscribir (acudiente).**
 
-1. Abre el enlace o pone el código en la app de acudientes → crea su cuenta con **correo y contraseña** → **autorización de tratamiento de datos** (versionada, con fecha) → permiso de notificaciones.
+1. Abre el enlace o pone el código en la app (modo acudiente) → crea su cuenta con **correo y contraseña** → **autorización de tratamiento de datos** (versionada, con fecha) → permiso de notificaciones.
 2. Datos del estudiante: nombres y apellidos (lo mínimo necesario).
 3. **Dirección exacta**, en campos separados para que se ubique bien en el mapa:
    - Municipio (uno de los 10 del Valle de Aburrá) y barrio.
@@ -218,7 +218,7 @@ La vuelta se arma en el colegio con la **lista de abordaje**:
 - El progreso: _"Va en la parada 3 de 12 · la tuya es la 7"_, y la hora estimada de llegada a su parada.
 - Nada sobre las demás paradas: ni nombres, ni direcciones, ni si alguien fue recogido o entregado.
 
-### 6.6 Tarjeta de cada hijo (app de acudientes)
+### 6.6 Tarjeta de cada hijo (modo acudiente)
 
 En la pantalla de inicio, cada hijo tiene una tarjeta con los recorridos de hoy, uno por fila, y los botones para llamar:
 
@@ -305,9 +305,9 @@ El GPS del celular que hace el rastreo debe estar activo y funcionando durante t
 
 ```mermaid
 flowchart LR
-  subgraph Moviles
-    D[App Conductor<br/>Expo · Android]
-    G[App Acudientes<br/>Expo · Android]
+  subgraph Moviles["App Enruta2 · Expo · Android"]
+    D[Modo conductor]
+    G[Modo acudiente]
   end
 
   subgraph Backend
@@ -357,7 +357,7 @@ flowchart LR
 | Decisión         | Elección                                      | Alternativas consideradas   | Razón                                                                                                              |
 | ---------------- | --------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Plataforma móvil | React Native + Expo, solo Android en el MVP   | PWA, Flutter, nativo        | TypeScript de punta a punta; el MVP necesita GPS en segundo plano, notificaciones y cámara, que una PWA no da bien |
-| Número de apps   | Dos (conductor y acudientes)                  | Una con roles               | Aísla el permiso de ubicación en segundo plano en una sola app                                                     |
+| Número de apps   | Una, con selección de rol al abrirla          | Dos apps (ADR 0002)         | Un APK, un canal OTA y una sola prueba cerrada; la ubicación solo se pide en el modo conductor (ADR 0011)          |
 | Backend          | NestJS + PostgreSQL + PostGIS + Prisma        | Express, Drizzle            | Estructura modular, buen soporte de WebSockets y OpenAPI                                                           |
 | Tiempo real      | Socket.IO + Redis adapter                     | Firebase, Supabase Realtime | Control total de la autorización por sala; escala horizontal con Redis                                             |
 | Optimización     | OSRM + VROOM (Docker)                         | Google Routes API, OR-Tools | Código abierto, sin costo por uso, soporta rutas abiertas y tiempo de servicio por parada                          |
@@ -371,7 +371,7 @@ flowchart LR
 | #    | Título                                                            |
 | ---- | ----------------------------------------------------------------- |
 | 0001 | Expo y Android como única plataforma del MVP                      |
-| 0002 | Dos apps separadas en vez de una con roles                        |
+| 0002 | Dos apps separadas en vez de una con roles (reemplazada por 0011) |
 | 0003 | Estrategia de ubicación en segundo plano e ingesta por lotes HTTP |
 | 0004 | Motor de optimización: OSRM + VROOM                               |
 | 0005 | Tiempo real con Socket.IO y Redis                                 |
@@ -379,6 +379,7 @@ flowchart LR
 | 0007 | PostGIS con Prisma usando `Unsupported` + SQL crudo encapsulado   |
 | 0008 | Proveedor de mapas y de geocodificación                           |
 | 0010 | Navegación con Waze o Google Maps, parada por parada              |
+| 0011 | Una sola app con selección de rol                                 |
 
 ---
 
@@ -484,7 +485,7 @@ Las transiciones inválidas se rechazan con error de dominio. Cada transición r
 | `trip:progress`    | servidor → cliente | Número de la parada actual, total de paradas y número de la suya. Nada más de las otras paradas                                    |
 | `trip:ended`       | servidor → cliente | Fin del recorrido **o entrega de su hijo** (sección 6.5); el cliente deja de mostrar la ubicación y el servidor lo saca de la sala |
 
-Al conductor y al admin se les emite la vista completa (todas las paradas) en una sala distinta, incluido `trip:absence` ("hoy no va") para que la app del conductor se actualice al instante, además del push.
+Al conductor y al admin se les emite la vista completa (todas las paradas) en una sala distinta, incluido `trip:absence` ("hoy no va") para que el modo conductor se actualice al instante, además del push.
 
 ---
 
@@ -513,7 +514,7 @@ Al conductor y al admin se les emite la vista completa (todas las paradas) en un
 - `APPROACHING`: hora estimada ≤ `APPROACHING_THRESHOLD_MIN` (por defecto 5). No se avisa si el aviso de "en camino" ya decía 5 min o menos.
 - `ARRIVED`: distancia a la parada ≤ `ARRIVAL_RADIUS_M` (por defecto 100, se ajusta en el piloto) y velocidad baja.
 - `APPROACHING` y `ARRIVED`, y los avisos a los acudientes, se deciden **en el servidor** a partir de los puntos GPS, no con geocercas del celular.
-- **Marcar en la dirección:** la app del conductor habilita recogido, entregado y no salió cuando la posición del celular está a ≤ `ARRIVAL_RADIUS_M` de la parada. Lo calcula con su propio GPS (funciona sin señal) con la regla compartida de `packages/domain`, y el servidor la revalida con la posición que trae el evento. Si la posición no coincide con el pin, el conductor puede marcar igual eligiendo un motivo (_el pin está mal ubicado_, _la entrada queda lejos_, _otro_ con texto): queda en `overrideReason` con la posición y la precisión del GPS, y el admin lo ve en el historial del recorrido. Con **El pin es aquí**, el conductor le propone la corrección al acudiente principal, que es quien la acepta (sección 6.4). Exige el GPS funcionando, con una posición de los últimos `GPS_LOST_SECONDS` (sección 7.2.1).
+- **Marcar en la dirección:** el modo conductor habilita recogido, entregado y no salió cuando la posición del celular está a ≤ `ARRIVAL_RADIUS_M` de la parada. Lo calcula con su propio GPS (funciona sin señal) con la regla compartida de `packages/domain`, y el servidor la revalida con la posición que trae el evento. Si la posición no coincide con el pin, el conductor puede marcar igual eligiendo un motivo (_el pin está mal ubicado_, _la entrada queda lejos_, _otro_ con texto): queda en `overrideReason` con la posición y la precisión del GPS, y el admin lo ve en el historial del recorrido. Con **El pin es aquí**, el conductor le propone la corrección al acudiente principal, que es quien la acepta (sección 6.4). Exige el GPS funcionando, con una posición de los últimos `GPS_LOST_SECONDS` (sección 7.2.1).
 - Cada notificación se envía **una sola vez** por parada y recorrido (idempotencia).
 
 ---
@@ -564,8 +565,9 @@ Al admin:
 
 ## 14. Cumplimiento y publicación en Google Play
 
-### 14.1 Ubicación en segundo plano (solo `apps/driver`)
+### 14.1 Ubicación en segundo plano (solo en el modo conductor)
 
+- La app es una sola ([ADR 0011](adr/0011-una-app-con-seleccion-de-rol.md)): la declaración cubre la app completa, pero el permiso solo se pide en el modo conductor. El video y la política de privacidad deben dejar claro que los acudientes no comparten su ubicación.
 - Google Play solo la permite cuando aporta un beneficio significativo y es parte de la función central de la app.
 - Requiere el **formulario de declaración de permisos** en Play Console, con **video** que muestre la función.
 - Requiere un **aviso visible dentro de la app** (pantalla bloqueante) **antes** de pedir el permiso, explicando qué se recoge y para qué.
@@ -582,7 +584,7 @@ Al admin:
 
 - Formulario de seguridad de datos (_Data safety_) en Play Console.
 - Política de privacidad pública, con capítulo de datos de menores.
-- **El identificador de cada app no se puede cambiar después de publicar.** Propuesta, a confirmar: `co.enruta2.driver` y `co.enruta2.guardian`.
+- **El identificador de la app no se puede cambiar después de publicar.** Elegido: `co.enruta2.app`.
 
 ---
 
@@ -636,7 +638,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 - OSRM con el Valle de Aburrá (recorte del extracto de Colombia de OpenStreetMap) y VROOM en Docker. Ya montados en la Etapa 1 del plan (`infra/routing`); en esta fase la API los empieza a usar.
 - Endpoint de optimización para ida y vuelta.
 - Heurística de respaldo en `packages/domain` con tests.
-- Lista y mapa del orden óptimo en la app del conductor.
+- Lista y mapa del orden óptimo en el modo conductor.
 
 **Aceptación:** con 15 paradas reales de prueba en Medellín, la ruta más rápida se calcula en menos de 2 s, con todas las paradas incluidas.
 
@@ -649,7 +651,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 - Gateway WebSocket con salas autorizadas y Redis adapter.
 - Cálculo de hora estimada por parada.
 - GPS siempre activo: requisitos para iniciar, alerta al conductor si se apaga y aviso al admin si el recorrido deja de enviar ubicación (sección 7.2.1).
-- Mapa en vivo en la app de acudientes: vehículo, su parada y el progreso ("parada 3 de 12"), nada más, y solo hasta que dejan a su hijo.
+- Mapa en vivo en el modo acudiente: vehículo, su parada y el progreso ("parada 3 de 12"), nada más, y solo hasta que dejan a su hijo.
 - Botones para llamar al conductor o al acompañante en la tarjeta de cada hijo (sección 6.6).
 
 **Aceptación:** con la pantalla apagada o Waze en primer plano durante 30 min, el rastreo no se interrumpe; un acudiente de otro recorrido no puede unirse a la sala.
@@ -659,7 +661,7 @@ Cada fase termina con su criterio de aceptación cumplido y los tests en verde.
 - Máquina de estados de paradas en `packages/domain`.
 - Aviso de "en camino" al tocar **Ir a la parada**; detección de "va llegando" y "llegó" en el servidor.
 - Marcado de recogido, entregado y no salió solo en la dirección (GPS), con motivo cuando se fuerza.
-- Notificaciones push con el catálogo de la sección 13, idempotentes, en las dos apps.
+- Notificaciones push con el catálogo de la sección 13, idempotentes, en los dos modos de la app.
 
 **Aceptación:** en una simulación de recorrido, cada acudiente recibe exactamente una notificación por evento.
 
@@ -704,7 +706,7 @@ Una ruta real (idealmente de una empresa legal de transporte especial), durante 
 1. Proveedor de geocodificación y de mapas (ADR 0008), con precios verificados.
 2. Días de retención de puntos GPS y de eventos de parada (validar con la Ley 1581).
 3. Obligaciones del Decreto 1048 de 2026 que deben convertirse en funcionalidades.
-4. Identificadores definitivos de las apps en Google Play.
+4. Nombre definitivo de la ficha en Google Play (el identificador ya es `co.enruta2.app`).
 5. Modelo de negocio, si el piloto funciona (cobro a la empresa de transporte por vehículo, por ejemplo).
 
 ---

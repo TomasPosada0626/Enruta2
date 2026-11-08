@@ -20,7 +20,7 @@ Los tiempos suponen una persona a medio tiempo. Total estimado: 16 a 18 semanas.
 - **Paradas compartidas** (resuelto): los estudiantes con el mismo pin quedan en una sola parada de cada recorrido; recogido, entregado y no salió se marcan por estudiante (`TripStop` y `TripStudent`, spec, secciones 10 y 12.1).
 - **Android 14+.** Además de la ubicación en segundo plano, Play Console pide declarar el tipo de servicio en primer plano (`location`). Agregarlo a la sección 14.
 - **`LocationPing` particionado por día** desde la primera migración, para borrar por retención con `DROP` de particiones en vez de `DELETE` masivos (ADR 0007).
-- **Prueba cerrada por app.** La app del conductor también necesita 12 testers; los acudientes del piloto solo cubren la suya.
+- **Una sola prueba cerrada** (resuelto): la app es una sola con dos modos ([ADR 0011](adr/0011-una-app-con-seleccion-de-rol.md)), así que los acudientes de la ruta piloto cubren los 12 testers.
 
 ## Etapas
 
@@ -55,7 +55,8 @@ Tres prototipos desechables que validan lo que podría obligar a cambiar el dise
 
 Además, fuera del orden original:
 
-- [x] **Prototipo de las dos apps** con el diseño elegido (dirección F: mapa para los acudientes, encabezado azul marino para el conductor), datos de ejemplo y el paquete `packages/ui` compartido. Sirve para validar el flujo con la empresa piloto antes de construir el backend; en las fases 1 a 5 las pantallas se conectan a la API.
+- [x] **Prototipo de la app** con el diseño elegido (dirección F: mapa para los acudientes, encabezado azul marino para el conductor), datos de ejemplo y el paquete `packages/ui`. Una sola app con selección de rol al abrirla ([ADR 0011](adr/0011-una-app-con-seleccion-de-rol.md)), menú de pestañas en cada modo y varios hijos por acudiente.
+- [x] **APK de prueba y actualizaciones OTA** con EAS Build (perfil `preview`) y EAS Update (canal `preview`), publicadas en cada push a `main` por GitHub Actions. Sirve para validar el flujo con la empresa piloto antes de construir el backend; en las fases 1 a 5 las pantallas se conectan a la API.
 
 ### Etapas 2 a 6
 

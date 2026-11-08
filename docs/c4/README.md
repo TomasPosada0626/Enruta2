@@ -18,7 +18,7 @@ flowchart TB
   push["Expo Push / FCM<br/>notificaciones"]
   geo["Proveedor de geocodificación<br/>(ADR 0008)"]
   nav["Waze / Google Maps<br/>navegación del conductor (ADR 0010)"]
-  play["Google Play<br/>distribución de las apps"]
+  play["Google Play<br/>distribución de la app"]
 
   admin -->|"crea rutas y aprueba<br/>inscripciones"| enruta2
   driver -->|"hace el recorrido y<br/>marca cada parada"| enruta2
@@ -37,9 +37,9 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  subgraph Moviles["Móviles (Android)"]
-    D["App Conductor<br/>Expo · apps/driver"]
-    G["App Acudientes<br/>Expo · apps/guardian"]
+  subgraph Moviles["App Enruta2 · Expo · apps/mobile (Android)"]
+    D["Modo conductor"]
+    G["Modo acudiente"]
   end
 
   subgraph Backend
@@ -64,4 +64,4 @@ flowchart LR
   PUSH --> G
 ```
 
-**Estado actual (Etapa 1):** existen las dos apps, la API con health checks, PostgreSQL/PostGIS y Redis. OSRM y VROOM ya corren en Docker con el Valle de Aburrá ([`infra/routing`](../../infra/routing/README.md)), pero la API los empieza a usar en la Fase 2; WebSockets y Expo Push llegan en las fases 3 y 4.
+**Estado actual (Etapa 1):** existe la app (un prototipo navegable con datos de ejemplo, instalable como APK y actualizable por OTA con EAS Update), la API con health checks, PostgreSQL/PostGIS y Redis. OSRM y VROOM ya corren en Docker con el Valle de Aburrá ([`infra/routing`](../../infra/routing/README.md)), pero la API los empieza a usar en la Fase 2; WebSockets y Expo Push llegan en las fases 3 y 4.

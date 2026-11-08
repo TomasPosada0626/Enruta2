@@ -1,6 +1,6 @@
 # 0002 — Dos apps separadas en vez de una con roles
 
-- **Estado:** Aceptada
+- **Estado:** Reemplazada por [ADR 0011](0011-una-app-con-seleccion-de-rol.md)
 - **Fecha:** 2026-11-05
 
 ## Contexto
