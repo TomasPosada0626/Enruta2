@@ -32,8 +32,10 @@ const COUNTRY_FILE = 'colombia-latest.osm.pbf';
 const RENUMBERED_FILE = 'colombia-nodos-renumerados.osm.pbf';
 
 const REGION = 'valle-aburra';
-// Valle de Aburrá, de Caldas a Barbosa, con margen: oeste,sur,este,norte.
-const REGION_BBOX = '-75.75,5.95,-75.25,6.55';
+// Los 10 municipios del Valle de Aburrá, de Caldas a Barbosa, con sus zonas rurales.
+// Límites de OpenStreetMap (2026-11): -75.719,5.978,-75.217,6.509; aquí con ~3 km de margen.
+// Orden: oeste,sur,este,norte.
+const REGION_BBOX = '-75.75,5.95,-75.19,6.54';
 
 const OSRM_IMAGE = 'ghcr.io/project-osrm/osrm-backend:v26.11.0-debian';
 const OSMIUM_IMAGE = 'enruta2/osmium:local';

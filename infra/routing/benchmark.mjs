@@ -1,5 +1,6 @@
-// Prueba de riesgo de la Etapa 1: ¿OSRM + VROOM calculan el orden de 15 paradas reales del
-// Valle de Aburrá en menos de 2 s y respetan la hora de entrada? (criterio de la Fase 2)
+// Prueba de riesgo de la Etapa 1: ¿OSRM + VROOM calculan la ruta más rápida por 15 paradas del
+// Valle de Aburrá en menos de 2 s, sin dejar ninguna por fuera? (criterio de la Fase 2)
+// La hora de entrada al colegio no es una restricción: solo importa la ruta más rápida.
 //
 //   pnpm routing:up && pnpm routing:benchmark
 //
@@ -68,17 +69,9 @@ function jobs() {
   }));
 }
 
-function toSchool(timeWindow) {
+function toSchool() {
   return {
-    vehicles: [
-      {
-        id: 1,
-        profile: 'car',
-        start: coord(start),
-        end: coord(school),
-        ...(timeWindow ? { time_window: [0, timeWindow] } : {}),
-      },
-    ],
+    vehicles: [{ id: 1, profile: 'car', start: coord(start), end: coord(school) }],
     jobs: jobs(),
   };
 }
@@ -126,7 +119,7 @@ async function main() {
     `OSRM /table ${stops.length + 2}×${stops.length + 2}: ${(performance.now() - t).toFixed(0)} ms`,
   );
 
-  // 2. Ida sin hora límite: el orden óptimo y su duración.
+  // 2. Ida: la ruta más rápida y su duración.
   const times = [];
   let best;
   for (let i = 0; i < RUNS; i++) {
@@ -157,21 +150,7 @@ async function main() {
       `y ${km(naive.distance - idaRoute.distance)}`,
   );
 
-  // 4. Hora límite alcanzable: entrada al colegio 10 min después de la llegada óptima.
-  const reachable = await vroom(toSchool(ida.arrival + 600));
-  console.log('\n— Ida con hora límite alcanzable —');
-  console.log(`Paradas sin asignar: ${describeRoute(reachable.body).unassigned} (factible)`);
-
-  // 5. Hora límite imposible: 60 % de la duración óptima.
-  const tight = await vroom(toSchool(Math.round(ida.arrival * 0.6)));
-  const tightRoute = describeRoute(tight.body);
-  console.log('\n— Ida con hora límite imposible —');
-  console.log(
-    `VROOM no informa "inviable": deja ${tightRoute.unassigned} de ${stops.length} paradas sin asignar ` +
-      `para cumplir la hora. Enruta2 nunca puede dejar a un niño por fuera.`,
-  );
-
-  // 6. Vuelta: ruta abierta desde el colegio.
+  // 4. Vuelta: ruta abierta desde el colegio.
   const vueltaTimes = [];
   let vueltaBody;
   for (let i = 0; i < RUNS; i++) {
@@ -188,11 +167,13 @@ async function main() {
   );
 
   const worst = Math.max(idaStats.max, vueltaStats.max);
+  const leftOut = ida.unassigned + vuelta.unassigned;
   console.log(
     `\n${worst < LIMIT_MS ? '✔' : '✖'} Peor tiempo de cálculo: ${worst.toFixed(0)} ms ` +
       `(criterio de la Fase 2: menos de ${LIMIT_MS} ms)`,
   );
-  if (worst >= LIMIT_MS) process.exitCode = 1;
+  console.log(`${leftOut === 0 ? '✔' : '✖'} Paradas por fuera de la ruta: ${leftOut}`);
+  if (worst >= LIMIT_MS || leftOut > 0) process.exitCode = 1;
 }
 
 main().catch((error) => {

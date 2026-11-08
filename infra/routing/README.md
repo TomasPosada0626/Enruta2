@@ -20,7 +20,7 @@ pnpm routing:down        # detiene OSRM y VROOM
 | `prepare.mjs`            | Descarga, verificación MD5, renumeración y recorte con osmium, y procesamiento con OSRM |
 | `osmium.Dockerfile`      | Imagen mínima con `osmium-tool` de Debian                                               |
 | `vroom/config.yml`       | Configuración de vroom-express apuntando al contenedor de OSRM                          |
-| `benchmark.mjs`          | Prueba de la Etapa 1: tiempo de cálculo, ahorro e inviabilidad                          |
+| `benchmark.mjs`          | Prueba de la Etapa 1: tiempo de cálculo y ahorro frente al orden de la lista            |
 | `fixtures/medellin.json` | 15 puntos públicos de referencia (no son direcciones de estudiantes)                    |
 
 ## Por qué solo el Valle de Aburrá
